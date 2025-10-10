@@ -1,0 +1,28 @@
+{
+	"name": "Raita AI Dashboard",
+	"short_name": "Raita AI",
+	"description": "Market intelligence and business analytics dashboard",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#0f1114",
+	"theme_color": "#00ff9d",
+	"orientation": "portrait-primary",
+	"icons": [
+		{
+			"src": "assets/images/favicon.ico",
+			"sizes": "192x192",
+			"type": "image/svg+xml"
+		},
+		{
+			"src": "assets/images/favicon.ico",
+			"sizes": "512x512",
+			"type": "image/svg+xml"
+		}
+	],
+	"categories": [
+		"business",
+		"productivity"
+	],
+	"lang": "en",
+	"dir": "ltr"
+}
