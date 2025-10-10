@@ -5,13 +5,13 @@
 	<meta charset="UTF-8" />
 	<title>Dashboard</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="stylesheet" href="css/style.css" />
+	<link rel="stylesheet" href="../css/style.css" />
 	<link rel="manifest" href="manifest.json" />
 </head>
 
 <body>
-	<main class="content">
-		<!-- Market AI Section -->
+	<div class="dashbord-first-row">
+		<!-- Market AI Section - 70% سمت چپ -->
 		<section class="market-ai" aria-label="Market AI Assistant">
 			<div class="market-ai__header">
 				<img src="assets/images/favicon.ico" alt="Raita AI" class="market-ai__logo" />
@@ -37,164 +37,180 @@
 			<div class="market-ai__results" aria-live="polite"></div>
 		</section>
 
-		<!-- Stats Grid -->
 		<section class="stats-grid" aria-label="Business statistics">
+			<!-- کارت اول - بالا -->
 			<div class="stat-card stat-card--revenue">
-				<div class="stat-card__content">
-					<h3 class="stat-card__title">Total Revenue</h3>
-					<p class="stat-card__value" data-value="81000">$81,000</p>
-					<div class="stat-card__trend trend--up">
-						<span class="trend__icon">↑</span>
-						<span class="trend__value">10.0%</span>
-						<span class="trend__text">From last week</span>
+				<div class="stat-card-content">
+					<div class="stat-card__title">
+						<h3>Total Revenue</h3>
+						<svg class="icon-stat-card-flash" width="24" height="24" viewBox="0 0 24 24" fill="none"
+							xmlns="http://www.w3.org/2000/svg">
+							<path d="M7 17L17 7" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
+							<path d="M7 7H17V17" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+					</div>
+
+					<div class="stat-card-detail">
+						<p class="stat-card__value" data-value="81000">$81,000</p>
+						<div class="stat-card__trend trend--up">
+							<div class="trend-section">
+								<svg class="trend__icon" width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M3.55291 15.9191L6.38134 11.0201L11.2803 13.8485L15.523 6.50004" fill="#5FFF66"/>
+									<path d="M3.55291 15.9191L6.38134 11.0201L11.2803 13.8485L15.523 6.50004" stroke="#09DE13" stroke-width="1.4" stroke-miterlimit="5.759" stroke-linecap="round" stroke-linejoin="round"/>
+									<path d="M12.625 7.27649L15.5228 6.50003L16.2992 9.39781" stroke="#09DE13" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+
+								<span class="trend__value">10.0%</span>
+							</div>
+							<span class="trend__text">From last week</span>
+						</div>
 					</div>
 				</div>
 			</div>
 
+			<!-- کارت دوم - پایین -->
 			<div class="stat-card">
 				<div class="stat-card__content">
-					<h3 class="stat-card__title">Total Orders</h3>
-					<p class="stat-card__value" data-value="5000">5,000</p>
-					<div class="stat-card__trend trend--up">
-						<span class="trend__icon">↑</span>
-						<span class="trend__value">1.5%</span>
-						<span class="trend__text">From last week</span>
+					<div class="stat-card__title">
+						<h3>Total Orders</h3>
+						<svg class="icon-stat-card-flash" width="24" height="24" viewBox="0 0 24 24" fill="none"
+							xmlns="http://www.w3.org/2000/svg">
+							<path d="M7 17L17 7" stroke="var(--accent-2)" stroke-linecap="round"
+								stroke-linejoin="round" />
+							<path d="M7 7H17V17" stroke="var(--accent-2)" stroke-linecap="round"
+								stroke-linejoin="round" />
+						</svg>
 					</div>
-				</div>
-			</div>
 
-			<div class="stat-card">
-				<div class="stat-card__content">
-					<h3 class="stat-card__title">Instagram Posts</h3>
-					<p class="stat-card__value" data-value="8">8</p>
-					<div class="stat-card__trend trend--up">
-						<span class="trend__icon">↑</span>
-						<span class="trend__value">2.1%</span>
-						<span class="trend__text">From last week</span>
-					</div>
-				</div>
-			</div>
+					<div class="stat-card-detail">
+						<p class="stat-card__value" data-value="5000">$5,000</p>
+						<div class="stat-card__trend trend--up">
+							<div class="trend-section">
+								<svg class="trend__icon" width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M3.55291 15.9191L6.38134 11.0201L11.2803 13.8485L15.523 6.50004" fill="#5FFF66"/>
+									<path d="M3.55291 15.9191L6.38134 11.0201L11.2803 13.8485L15.523 6.50004" stroke="#09DE13" stroke-width="1.4" stroke-miterlimit="5.759" stroke-linecap="round" stroke-linejoin="round"/>
+									<path d="M12.625 7.27649L15.5228 6.50003L16.2992 9.39781" stroke="#09DE13" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
 
-			<div class="stat-card">
-				<div class="stat-card__content">
-					<h3 class="stat-card__title">Open AI Queries</h3>
-					<p class="stat-card__value" data-value="42">42</p>
-					<div class="stat-card__trend trend--up">
-						<span class="trend__icon">↑</span>
-						<span class="trend__value">5.3%</span>
-						<span class="trend__text">From last week</span>
+								<span class="trend__value">1.5%</span>
+							</div>
+							<span class="trend__text">From last week</span>
+						</div>
 					</div>
+
+
 				</div>
 			</div>
 		</section>
+	</div>
 
-		<!-- Trending Products -->
-		<article class="trending-products" aria-label="Today's trending products">
-			<header class="section-header">
-				<h2>Today's Trending Products</h2>
-			</header>
+	<!-- Trending Products -->
+	<div class="dashbord-second-row">
+	<article class="trending-products" aria-label="Today's trending products">
+		<header class="section-header">
+			<h3>Today's Trending Products</h3>
+		</header>
 
-			<div class="products-grid">
-				<div class="product-card">
-					<img src="assets/images/product-1.jpg" alt="Lattafa Bade e Al Oud Sublime"
-						class="product-card__image" loading="lazy" />
-					<div class="product-card__content">
-						<h3 class="product-card__title">
-							Lattafa Bade e Al Oud Sublime
-						</h3>
-						<p class="product-card__price">€23.99</p>
-						<button class="btn btn--analyze" aria-label="Analyze Lattafa Bade e Al Oud Sublime">
-							Analyze
-						</button>
-					</div>
-				</div>
-
-				<div class="product-card">
-					<img src="assets/images/product-2.jpg" alt="Lattafa Bade Khamrah Parfum"
-						class="product-card__image" loading="lazy" />
-					<div class="product-card__content">
-						<h3 class="product-card__title">Lattafa Bade Khamrah Parfum</h3>
-						<p class="product-card__price">€33.15</p>
-						<button class="btn btn--analyze" aria-label="Analyze Lattafa Bade Khamrah Parfum">
-							Analyze
-						</button>
-					</div>
-				</div>
-
-				<div class="product-card">
-					<img src="assets/images/product-3.jpg" alt="Lattafa Bade Khanjar Niche Emarati 55 ml"
-						class="product-card__image" loading="lazy" />
-					<div class="product-card__content">
-						<h3 class="product-card__title">
-							Lattafa Bade Khanjar Niche Emarati 55 ml
-						</h3>
-						<p class="product-card__price">€44.95</p>
-						<button class="btn btn--analyze"
-							aria-label="Analyze Lattafa Bade Khanjar Niche Emarati 55 ml">
-							Analyze
-						</button>
-					</div>
+		<div class="products-grid">
+			<div class="product-card">
+				<img src="assets/images/product-1.jpg" alt="Lattafa Bade e Al Oud Sublime" class="product-card__image"
+					loading="lazy" />
+				<div class="product-card__content">
+					<h3 class="product-card__title">
+						Lattafa Bade e Al Oud Sublime
+					</h3>
+					<p class="product-card__price">€23.99</p>
+					<button class="btn btn--analyze" aria-label="Analyze Lattafa Bade e Al Oud Sublime">
+						Analyze
+					</button>
 				</div>
 			</div>
-		</article>
 
-		<!-- Suggested Markets -->
-		<aside class="suggested-markets" aria-label="Suggested markets to explore">
-			<header class="section-header">
-				<h2>Suggested Markets to Explore</h2>
-			</header>
-
-			<div class="markets-list">
-				<div class="market-card">
-					<div class="market-card__content">
-						<h3 class="market-card__title">Canada</h3>
-						<p class="market-card__description">
-							Opportunity: Strong seasonal demand for winter sportswear and
-							accessories.
-						</p>
-					</div>
-					<button class="btn btn--view-analysis" aria-expanded="false" aria-controls="market-canada">
-						View Analysis
+			<div class="product-card">
+				<img src="assets/images/product-2.jpg" alt="Lattafa Bade Khamrah Parfum" class="product-card__image"
+					loading="lazy" />
+				<div class="product-card__content">
+					<h3 class="product-card__title">Lattafa Bade Khamrah Parfum</h3>
+					<p class="product-card__price">€33.15</p>
+					<button class="btn btn--analyze" aria-label="Analyze Lattafa Bade Khamrah Parfum">
+						Analyze
 					</button>
-					<div class="market-card__chart" id="market-canada" hidden>
-						<canvas class="chart-canvas" width="400" height="200"></canvas>
-					</div>
-				</div>
-
-				<div class="market-card">
-					<div class="market-card__content">
-						<h3 class="market-card__title">Australia</h3>
-						<p class="market-card__description">
-							Opportunity: Growing market for sustainable and eco-friendly
-							products.
-						</p>
-					</div>
-					<button class="btn btn--view-analysis" aria-expanded="false" aria-controls="market-australia">
-						View Analysis
-					</button>
-					<div class="market-card__chart" id="market-australia" hidden>
-						<canvas class="chart-canvas" width="400" height="200"></canvas>
-					</div>
-				</div>
-
-				<div class="market-card">
-					<div class="market-card__content">
-						<h3 class="market-card__title">Saudi Arabia</h3>
-						<p class="market-card__description">
-							Opportunity: High demand for luxury home goods and smart
-							appliances.
-						</p>
-					</div>
-					<button class="btn btn--view-analysis" aria-expanded="false" aria-controls="market-saudi">
-						View Analysis
-					</button>
-					<div class="market-card__chart" id="market-saudi" hidden>
-						<canvas class="chart-canvas" width="400" height="200"></canvas>
-					</div>
 				</div>
 			</div>
-		</aside>
-	</main>
+
+			<div class="product-card">
+				<img src="assets/images/product-3.jpg" alt="Lattafa Bade Khanjar Niche Emarati 55 ml"
+					class="product-card__image" loading="lazy" />
+				<div class="product-card__content">
+					<h3 class="product-card__title">
+						Lattafa Bade Khanjar Niche Emarati 55 ml
+					</h3>
+					<p class="product-card__price">€44.95</p>
+					<button class="btn btn--analyze" aria-label="Analyze Lattafa Bade Khanjar Niche Emarati 55 ml">
+						Analyze
+					</button>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	<!-- Suggested Markets -->
+	<aside class="suggested-markets" aria-label="Suggested markets to explore">
+		<header class="section-header">
+			<h2>Suggested Markets to Explore</h2>
+		</header>
+
+		<div class="markets-list">
+			<div class="market-card">
+				<div class="market-card__content">
+					<h3 class="market-card__title">Canada</h3>
+					<p class="market-card__description">
+						Opportunity: Strong seasonal demand for winter sportswear and
+						accessories.
+					</p>
+				</div>
+				<button class="btn btn--view-analysis" aria-expanded="false" aria-controls="market-canada">
+					View Analysis
+				</button>
+				<div class="market-card__chart" id="market-canada" hidden>
+					<canvas class="chart-canvas" width="400" height="200"></canvas>
+				</div>
+			</div>
+
+			<div class="market-card">
+				<div class="market-card__content">
+					<h3 class="market-card__title">Australia</h3>
+					<p class="market-card__description">
+						Opportunity: Growing market for sustainable and eco-friendly
+						products.
+					</p>
+				</div>
+				<button class="btn btn--view-analysis" aria-expanded="false" aria-controls="market-australia">
+					View Analysis
+				</button>
+				<div class="market-card__chart" id="market-australia" hidden>
+					<canvas class="chart-canvas" width="400" height="200"></canvas>
+				</div>
+			</div>
+
+			<div class="market-card">
+				<div class="market-card__content">
+					<h3 class="market-card__title">Saudi Arabia</h3>
+					<p class="market-card__description">
+						Opportunity: High demand for luxury home goods and smart
+						appliances.
+					</p>
+				</div>
+				<button class="btn btn--view-analysis" aria-expanded="false" aria-controls="market-saudi">
+					View Analysis
+				</button>
+				<div class="market-card__chart" id="market-saudi" hidden>
+					<canvas class="chart-canvas" width="400" height="200"></canvas>
+				</div>
+			</div>
+		</div>
+	</aside>
+	</div>
 </body>
 
 </html>
