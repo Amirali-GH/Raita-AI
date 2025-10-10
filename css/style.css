@@ -85,18 +85,27 @@ body {
 	background-color: var(--bg);
 	color: var(--text);
 	line-height: 1.5;
-	min-height: 100vh;
-	overflow-x: hidden;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	grid-template-rows: auto 1fr;
 }
 
-body.theme--dark {
-	/* Dark theme would be optional, keeping light as default from Figma */
-	--bg: #0f1114;
-	--surface: #1a1d21;
-	--card: #1a1d21;
-	--text: #e5e7eb;
-	--muted: #9ca3af;
-	--border: #2d3748;
+.main {
+	min-height: 100vh;
+	background-color: var(--bg);
+	margin: 0; /* حذف فاصله ناخواسته */
+	padding: 0;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	overflow-x: hidden; /* جلوگیری از بیرون‌زدگی محتوا */
+}
+
+.content {
+	width: 100%;
+	max-width: none;
+	padding: 20px;
+	box-sizing: border-box;
 }
 
 /* Typography */
@@ -128,20 +137,13 @@ h3 {
 	font-size: var(--font-size-sm);
 }
 
-/* Layout */
-body {
-	display: grid;
-	grid-template-columns: 1fr;
-	grid-template-rows: auto 1fr;
-	min-height: 100vh;
-}
-
 /* Sidebar */
 .sidebar {
-	width: 300px;
+	width: 240px;
 	display: flex;
 	flex-direction: column;
-	height: 100vh;
+	justify-content: space-between;
+	height: 100%;
 	background: var(--card);
 	border-right: 1px solid #EBECF2;
 	overflow-y: auto;
@@ -150,11 +152,15 @@ body {
 	z-index: 1000;
 }
 
+.sidebar__item__icon{
+	margin: 8px 0px 0px 15px;
+}
+
 .sidebar__link {
 	display: inline-flex;
 	align-items: center;
+	height: 50px;
 	gap: 10px;
-	padding: 15px 15px 15px 15px;
 	width: 100%;
 	max-width: 240px;
 	color: var(--muted);
@@ -291,46 +297,46 @@ body {
 	flex-shrink: 0;
 }
 
-.footer__logout {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	color: #FF3B30;
-	font-size: 15px;
-	font-weight: 500;
-	background: transparent;
-	border: none;
-	cursor: pointer;
-	padding: 8px 0 0;
-	transition: opacity 0.2s ease;
-}
-
-.footer__logout:hover {
-	opacity: 0.8;
-}
-
-
 
 /* Profile Section */
 .sidebar__profile {
-	margin-top: auto;
-	padding: 12px;
-	background: #FFFFFF;
-	border-radius: 14px;
-	margin-left: 12px;
-	margin-right: 12px;
-	margin-bottom: 12px;
+	margin-top: 20px;
+	background: #fff;
 	display: flex;
 	align-items: center;
-	flex-direction: column;
 	justify-content: space-between;
+	border-radius: 0 0 12px 12px;
+	width: 100%;
+}
+
+.profile__wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	flex-direction: column;
+}
+
+.profile__info_Section{
+	display: flex;
+	align-items: center;
 	gap: 10px;
+	width: auto;
+	padding: 0px 0px 0px 12px;
+}
+
+.profile__info > svg{
+	padding: 0px 12px 0px 0px;
 }
 
 .profile__info {
 	display: flex;
 	align-items: center;
-	gap: 12px;
+	border-bottom: 1px solid #E5E7EB;
+	justify-content: space-between;
+	gap: 10px;
+	width: 100%;
+	padding-bottom: 20px;
 }
 
 .profile__avatar {
@@ -341,24 +347,70 @@ body {
 }
 
 .profile__name {
-	font-family: 'Plus Jakarta Sans';
-	font-weight: 500;
+	font-weight: 600;
 	font-size: 14px;
 	color: #0E121B;
+	margin: 0;
 }
 
 .profile__email {
-	font-family: 'Plus Jakarta Sans';
-	font-weight: 500;
-	font-size: 14px;
-	color: #525866;
+	font-size: 13px;
+	color: #6B7280;
+	margin: 0;
 }
 
-.btn--logout {
-	color: var(--danger);
-	background: transparent;
-	border: none;
+.icon-logout-sidebar{
+	margin: 0px 0px 2px 10px;
+}
+
+.btn--logout-icon {
+	background-color: white;
+	border: 0px solid #E1E4EA;
+	border-radius: 20px;
 	cursor: pointer;
+	transition: all 0.2s ease;
+	text-align: left;
+	width: 95%;
+	height: 50px;
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	margin: 10px 0px 10px 0px;
+
+	font-family: var(--font-primary);
+	font-weight: 500;
+	font-size: 14px;
+	color: var(--muted);
+}
+
+.btn--logout-icon:hover {
+	background: var(--surface);
+	color: var(--text);
+}
+
+.btn--logout-icon svg path {
+	stroke: var(--danger);
+}
+
+/* 🔹 افکت hover برای فلش کنار پروفایل */
+.profile__info svg {
+	cursor: pointer;
+	border-radius: 10px;
+	padding: 4px;
+	margin-right: 10px;
+}
+
+.profile__info svg:hover {
+	background: var(--surface); /* رنگ پس‌زمینه خاکستری شبیه آیتم‌های سایدبار */
+}
+
+.btn--logout-icon:hover {
+	background: var(--btn-red-hover);
+	border-color: var(--danger);
+}
+
+.btn--logout-icon svg path {
+	stroke: var(--danger);
 }
 
 /* Topbar - Updated to match Figma */
@@ -462,12 +514,6 @@ body {
 .main {
 	min-height: 100vh;
 	background-color: var(--bg);
-}
-
-.content {
-	padding: var(--space-md);
-	max-width: 1200px;
-	margin: 0 auto;
 }
 
 /* Market AI Section - Updated */
@@ -879,17 +925,6 @@ body {
 	color: white;
 }
 
-.btn--logout {
-	color: var(--danger);
-	background: transparent;
-	border: none;
-	cursor: pointer;
-}
-
-.btn--logout:hover {
-	background: var(--btn-red-hover);
-}
-
 /* Loading Spinner */
 .spinner {
 	width: 20px;
@@ -917,7 +952,7 @@ body {
 	}
 
 	body {
-		grid-template-columns: 300px 1fr;
+		grid-template-columns: auto 1fr;
 	}
 
 	.sidebar {
@@ -954,7 +989,7 @@ body {
 /* Updated Desktop Layout */
 @media (min-width: 1024px) {
 	body {
-		grid-template-columns: 300px 1fr;
+		grid-template-columns: auto 1fr;
 	}
 
 	.sidebar {

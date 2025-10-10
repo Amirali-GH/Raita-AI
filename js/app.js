@@ -5,8 +5,6 @@ class RaitaDashboard {
 
 	init() {
 		this.setupEventListeners();
-		this.initCountUpAnimations();
-		this.setupThemeToggle();
 		this.setupMobileMenu();
 	}
 
@@ -42,7 +40,7 @@ class RaitaDashboard {
 		});
 
 		// Logout button
-		const logoutButton = document.querySelector('.btn--logout');
+		const logoutButton = document.querySelector('#btn-logout');
 		logoutButton.addEventListener('click', () => this.handleLogout());
 
 		// Keyboard navigation
@@ -226,70 +224,6 @@ class RaitaDashboard {
 		setTimeout(() => {
 			notification.remove();
 		}, 3000);
-	}
-
-	initCountUpAnimations() {
-		const observer = new IntersectionObserver((entries) => {
-			entries.forEach(entry => {
-				if (entry.isIntersecting) {
-					const valueElement = entry.target;
-					const value = parseInt(valueElement.dataset.value.replace(/,/g, ''));
-
-					if (!valueElement.countUp) {
-						valueElement.countUp = new CountUp(valueElement, value, {
-							duration: 1.2,
-							separator: ',',
-							prefix: valueElement.textContent.includes('$') ? '$' : '',
-							suffix: valueElement.textContent.includes('%') ? '%' : ''
-						});
-
-						if (!valueElement.countUp.error) {
-							valueElement.countUp.start();
-						} else {
-							console.error(valueElement.countUp.error);
-						}
-					}
-
-					observer.unobserve(valueElement);
-				}
-			});
-		}, { threshold: 0.5 });
-
-		document.querySelectorAll('.stat-card__value').forEach(el => {
-			observer.observe(el);
-		});
-	}
-
-	setupThemeToggle() {
-		const themeToggle = document.querySelector('.theme-toggle');
-		const themeIcon = themeToggle.querySelector('.theme-icon');
-
-		themeToggle.addEventListener('click', () => {
-			const isDark = document.body.classList.contains('theme--dark');
-
-			if (isDark) {
-				document.body.classList.remove('theme--dark');
-				document.body.classList.add('theme--light');
-				themeIcon.textContent = '☀️';
-				themeToggle.setAttribute('aria-pressed', 'true');
-				localStorage.setItem('theme', 'light');
-			} else {
-				document.body.classList.remove('theme--light');
-				document.body.classList.add('theme--dark');
-				themeIcon.textContent = '🌙';
-				themeToggle.setAttribute('aria-pressed', 'false');
-				localStorage.setItem('theme', 'dark');
-			}
-		});
-
-		// Load saved theme
-		const savedTheme = localStorage.getItem('theme') || 'dark';
-		if (savedTheme === 'light') {
-			document.body.classList.remove('theme--dark');
-			document.body.classList.add('theme--light');
-			themeIcon.textContent = '☀️';
-			themeToggle.setAttribute('aria-pressed', 'true');
-		}
 	}
 
 	setupMobileMenu() {
