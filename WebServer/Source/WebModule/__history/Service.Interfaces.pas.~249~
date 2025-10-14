@@ -1,0 +1,303 @@
+Unit Service.Interfaces;
+
+Interface
+
+Uses
+    System.Classes,
+    System.Generics.Collections,
+    System.JSON,
+    MVCFramework.Container,
+    Web.ReqFiles,
+    Model.Sale.SaleAgent,
+    Model.User,
+    Model.ResultCustomerContact,
+    Model.Branch.Branch,
+    Model.Sale.Campaign,
+    Model.Lead.FileResultContactCustomer,
+    Model.Lead.PotentialLevel,
+    Model.Customer.Customer,
+    Model.Lead.CustomerStatus,
+    Model.Car.Car,
+    Model.Car.Category,
+    Model.Car.Company,
+    Model.Organization.SaleAgentContract,
+    Model.Organization.Employee,
+    Model.View.Leads,
+    Model.Lead.PhoneAssignment,
+    Model.ContractRaw,
+    Model.Contract.FileResultContract,
+    Model.Lead.SourceCollectingData,
+    Model.ListOfTheLeads,
+    Model.Customer.Assignment,
+    Model.Contract;
+
+Type
+    INovinhubService = Interface ['{6A01CCB5-56F9-427D-B66A-A85BB3D01C14}']
+      procedure ImportAssignmentsFromExcel;
+    end;
+    {Contract}
+    IContractService = Interface ['{B4371AB8-E4A6-4C82-A8D3-8451C03F373F}']
+        Function GetAllContracts(var APage: string; const AStatus: string; const AContext: string): TObjectList<TContract>;
+        Function GetContractByID(const AID: Integer): TContract;
+        Function CreateContract(const AContract: TContract): TContract;
+        Function UpdateContractPartial(const AID: Integer; const AContract: TContract): TContract;
+        Function DeleteContract(const AID: Integer): Boolean;
+        Function CreateSummery(Const ANationalCode: Integer): TContract;
+    End;
+
+    ICustomerAssignmentService = Interface ['{8AFAEC6B-C1A8-43CD-B77B-FC106BDD3EEA}']
+        Function GetAllAssignments(Var APage: String; Const AContext: String): TObjectList<TCustomer_Assignment>;
+        Function GetAssignmentByID(Const AID: Int64): TCustomer_Assignment;
+        Function CreateAssignment(Const AAssign: TCustomer_Assignment): TCustomer_Assignment;
+        Function UpdateAssignmentPartial(Const AID: Int64; Const AAssign: TCustomer_Assignment): TCustomer_Assignment;
+        Function DeleteAssignment(Const AID: Int64): Boolean;
+    End;
+
+    {Source}
+    ISourceCollectingDataService = Interface ['{A0D3D670-304A-4A7B-AE9A-47272AB9C991}']
+        Function GetAllSourceCollectingData(Var APage: String; Const AStatus: String; Const AContext: String): TObjectList<TLead_SourceCollectingData>;
+        Function GetSourceCollectingDataByID(Const AID: Integer): TLead_SourceCollectingData;
+        Function CreateSourceCollectingData(Const ASourceData: TLead_SourceCollectingData): TLead_SourceCollectingData;
+        Function UpdateSourceCollectingDataPartial(Const AID: Integer; Const ASourceData: TLead_SourceCollectingData): TLead_SourceCollectingData;
+        Function DeleteSourceCollectingData(Const AID: Integer): Boolean;
+    End;
+
+    {Imgae Upload}
+    IImageUploadService = Interface ['{6594110B-9210-492A-85B3-768C4D285112}']
+        Function SaveUploadedImages(Const AFiles: TWebRequestFiles; Const AUserID: String): Boolean;
+        Function GetImagesByBranch(Const BranchID: Int64; Const Page, PageSize: Integer): TJSONObject;
+    End;
+
+
+    {Contract Upload}
+    IFileResultContractService = Interface ['{BE4236C8-5C2C-447C-8E63-FD97DC1683B2}']
+        Function GetAllFileResults(Var APage: String; Const AContext: String): TObjectList<TContract_FileResult>;
+        Function GetFileResultByID(Const AID: Int64): TContract_FileResult;
+        Function CreateFileResult(Const AFileResult: TContract_FileResult): TContract_FileResult;
+        Function UpdateFileResultPartial(Const AID: Int64; Const AFileResult: TContract_FileResult): TContract_FileResult;
+        Function DeleteFileResult(Const AID: Int64): Boolean;
+    End;
+
+    {Contract Upload}
+    IContractUploadService = Interface ['{0B064B8D-63CE-492E-94B2-910430387DC2}']
+        Function GetContractSheet(
+          Const AFileResultService: IFileResultContractService;  // Assuming a similar interface for contracts
+          Const AContractRaw: TObjectList<TContractRaw>;
+          Const AUserID: String;
+          Const AFileName: String;
+          Const AFileSize: String): Boolean;
+    End;
+
+    {Phone Assignment}
+    IPhoneAssignmentService = Interface ['{6DA2FE36-793B-49F9-910B-68A11B864826}']
+        Function GetPhonesAssignment_WithDetails(Var APage: String; Const ABranchID: String;
+          Out ATotalSize: Integer): TJSONObject;
+        Function GetListAssignments_FollowUp(Var APage: String; Const ABranchID: String;
+          Out ATotalSize: Integer): TObjectList<TListOfTheLeads>;
+        Function GetHeaderAssignments_FollowUp(Const ABranchID: String): TJSONObject;
+        Function GetHeaderAssignments(Const ABranchID: String; Const AStatusCode: String): TJSONObject;
+        Function GetListAssignments(Var APage: String; Const ABranchID: String;
+          Const AStatusCode: String; Out ATotalSize: Integer): TObjectList<TListOfTheLeads>;
+        Function UndoAssignPhonesFromBranches(Const ASourceID: Integer): TJSONObject;
+        Function GetNotAssign(Const ASourceID: Integer): TJSONArray;
+        Function GetBranchAssignments(Const ASourceID: Integer): TJSONArray;
+        Function GetAllAssignments(Var APage: String; Const ABranchID: String;
+          Const ASourceID: String; Out ATotalSize: Integer): TObjectList<TPhoneAssignment>;
+        Function GetAssignmentByID(Const AID: Int64): TCustomer_Assignment;
+        Function CreateAssignment(Const AAssignment: TCustomer_Assignment): TCustomer_Assignment;
+        Function UpdateAssignmentPartial(Const AID: Int64; Const AAssignment: TCustomer_Assignment): TCustomer_Assignment;
+        Function DeleteAssignment(Const AID: Int64): Boolean;
+        Function AssignPhonesToBranches(Const ABranchIdsJson: String;
+            Const ACountsJson: String; Const ASourceID: Integer): TJSONObject;
+    End;
+
+    {Employee}
+    IEmployeeService = Interface ['{0D970082-77C7-4DF9-AEDD-6488C780DF9C}']
+        Function GetAllEmployees(Var APage: String; Const AStatus: String; Const AContext: String;
+          Const AEmployeeRoleID: String; Out ATotalSize: Integer): TObjectList<TOrganization_Employee>;
+        Function GetEmployeeByID(Const AID: Integer): TOrganization_Employee;
+        Function CreateEmployee(Const AEmployee: TOrganization_Employee): TOrganization_Employee;
+        Function UpdateEmployeePartial(Const AID: Integer; Const AEmployee: TOrganization_Employee): TOrganization_Employee;
+        Function DeleteEmployee(Const AID: Integer): Boolean;
+    End;
+
+     {Sale Agent Contract}
+     ISaleAgentContractService = Interface ['{1117F0ED-D828-4C82-8062-D2E107FF8F3B}']
+        Function GetAllContracts(Var APage: String; Const AStatus: String; Const AContext: String): TObjectList<TOrganization_SaleAgentContract>;
+        Function GetContractByID(Const AID: Int64): TOrganization_SaleAgentContract;
+        Function CreateContract(Const AContract: TOrganization_SaleAgentContract): TOrganization_SaleAgentContract;
+        Function UpdateContractPartial(Const AID: Int64; Const AContract: TOrganization_SaleAgentContract): TOrganization_SaleAgentContract;
+        Function DeleteContract(Const AID: Int64): Boolean;
+     End;
+
+    {Car Company}
+    ICarCompanyService = Interface ['{AE299C2A-4E10-4DFE-96FA-95F5E889BB11}']
+        Function GetAllCarCompanies(Var APage: String; Const AStatus: String; Const AContext: String): TObjectList<TCar_Company>;
+        Function GetCarCompanyByID(Const AID: Integer): TCar_Company;
+        Function CreateCarCompany(Const ACarCompany: TCar_Company): TCar_Company;
+        Function UpdateCarCompanyPartial(Const AID: Integer; Const ACarCompany: TCar_Company): TCar_Company;
+        Function DeleteCarCompany(Const AID: Integer): Boolean;
+    End;
+
+    {Car Category}
+    ICarCategoryService = Interface ['{D7744328-05DA-4E03-B338-AEE3CF19A513}']
+        Function GetAllCarCategories(Var APage: String; Const AStatus: String; Const AContext: String): TObjectList<TCar_Category>;
+        Function GetCarCategoryByID(Const AID: Integer): TCar_Category;
+        Function CreateCarCategory(Const ACarCategory: TCar_Category): TCar_Category;
+        Function UpdateCarCategoryPartial(Const AID: Integer; Const ACarCategory: TCar_Category): TCar_Category;
+        Function DeleteCarCategory(Const AID: Integer): Boolean;
+    End;
+
+    {Car}
+    ICarService = Interface ['{97F13553-AE36-492E-8DAF-60D8AA6E3057}']
+        Function GetAllCars(Var APage: String; Const AStatus: String; Const AContext: String): TObjectList<TCar_Car>;
+        Function GetCarByID(Const AID: Integer): TCar_Car;
+        Function CreateCar(Const ACar: TCar_Car): TCar_Car;
+        Function UpdateCarPartial(Const AID: Integer; Const ACar: TCar_Car): TCar_Car;
+        Function DeleteCar(Const AID: Integer): Boolean;
+    End;
+
+    {Customer Status}
+    ICustomerStatusService = Interface ['{D88DFA84-5065-4510-AD24-25BD045CE249}']
+        Function GetAllCustomerStatuses(Var APage: String; Const AStatus: String; Const AContext: String): TObjectList<TLead_CustomerStatus>;
+        Function GetCustomerStatusByID(Const AID: Integer): TLead_CustomerStatus;
+        Function CreateCustomerStatus(Const ACustomerStatus: TLead_CustomerStatus): TLead_CustomerStatus;
+        Function UpdateCustomerStatusPartial(Const AID: Integer; Const ACustomerStatus: TLead_CustomerStatus): TLead_CustomerStatus;
+        Function DeleteCustomerStatus(Const AID: Integer): Boolean;
+    End;
+
+    ISaleAgentService = Interface ['{02203FC9-1E1B-405C-B39F-5459BAFD122A}']
+       Function GetAllSaleAgents(Var APage: String; Const AStatus: String; Const AContext: String; Const ABranchID: String): TObjectList<TSale_SaleAgent>;
+       Function GetSaleAgentByID(Const AID: Integer): TSale_SaleAgent;
+       Function CreateSaleAgent(Const ASaleAgent: TSale_SaleAgent): TSale_SaleAgent;
+       Function UpdateSaleAgentPartial(Const AID: Integer; Const ASaleAgent: TSale_SaleAgent): TSale_SaleAgent;
+       Function DeleteSaleAgent(Const AID: Integer): Boolean;
+    End;
+
+    {Customer}
+    ICustomerService = Interface ['{CF933F82-E998-4B83-9DD2-D80C9091E736}']
+        Function GetAllCustomers(Var APage: String; Const AStatus: String;
+          Const AContext: String; Out ATotalSize: Integer): TObjectList<TCustomer_Leads>;
+        Function GetCustomerByID(Const AID: Int64): TCustomer_Customer;
+        Function CreateCustomer(Const ACustomer: TCustomer_Customer): TCustomer_Customer;
+        Function UpdateCustomerPartial(Const AID: Int64; Const ACustomer: TCustomer_Customer): TCustomer_Customer;
+        Function DeleteCustomer(Const AID: Int64): Boolean;
+    End;
+
+    {Potential Level}
+    IPotentialLevelService = Interface ['{BC746AC7-EEF9-44DD-9113-5675CCF5F25E}']
+        Function GetAllPotentialLevels(Var APage: String; Const AStatus: String; Const AContext: String; Var ATotalSize: Integer): TObjectList<TLead_PotentialLevel>;
+        Function GetPotentialLevelByID(Const AID: Integer): TLead_PotentialLevel;
+        Function CreatePotentialLevel(Const APotentialLevel: TLead_PotentialLevel): TLead_PotentialLevel;
+        Function UpdatePotentialLevelPartial(Const AID: Integer; Const APotentialLevel: TLead_PotentialLevel): TLead_PotentialLevel;
+        Function DeletePotentialLevel(Const AID: Integer): Boolean;
+    End;
+
+    {File Result Contact Customer}
+    IFileResultContactCustomerService = Interface ['{74B38010-D421-439C-BD0C-6E8A8A60DE3C}']
+        Function GetAllFileResults(Var APage: String; Const AContext: String): TObjectList<TLead_FileResultContactCustomer>;
+        Function GetFileResultByID(Const AID: Int64): TLead_FileResultContactCustomer;
+        Function CreateFileResult(Const AFileResult: TLead_FileResultContactCustomer): TLead_FileResultContactCustomer;
+        Function UpdateFileResultPartial(Const AID: Int64; Const AFileResult: TLead_FileResultContactCustomer): TLead_FileResultContactCustomer;
+        Function DeleteFileResult(Const AID: Int64): Boolean;
+    End;
+
+    {Campain}
+    ICampaignService = Interface ['{5B37C1DD-E545-4CEF-8028-CA29F76A631B}']
+        Function GetAllCampaigns(Var APage: String; Const AStatus: String; Const AContext: String): TObjectList<TSale_Campaign>;
+        Function GetCampaignByID(Const AID: Integer): TSale_Campaign;
+        Function CreateCampaign(Const ACampaign: TSale_Campaign): TSale_Campaign;
+        Function UpdateCampaignPartial(Const AID: Integer; Const ACampaign: TSale_Campaign): TSale_Campaign;
+        Function DeleteCampaign(Const AID: Integer): Boolean;
+    End;
+
+    {User}
+    IUserService = Interface ['{8D5B4CD2-6B1C-4EC9-BFD8-E4CD8E8F60D3}']
+        Function GetAllUsers(Var APage: String; Const AStatus: String; Const AContext: String; Var ATotalSize: Integer): TObjectList<TUser>;
+        Function GetUserInfo(Const AID: Integer): TUserInfo;
+        Function GetUserByID(Const AID: Integer): TUser;
+        Function CreateUser(Const AUser: TUser): TUser;
+        Function UpdateUserPartial(Const AID: Integer; Const AUser: TUser): TUser;
+        Function DeleteUser(Const AID: Integer): Boolean;
+    End;
+
+    {Branch}
+    IBranchService = Interface ['{963BE3C9-09CA-4A8C-8AC2-5DDF3504AAE7}']
+        Function GetAllBranches(Var APage: String; Const AStatus: String; Const AContext: String): TObjectList<TBranch>;
+        Function GetInfo(Const AID: Integer): TBranchInfo;
+        Function GetBranchByID(Const AID: Integer): TBranch;
+        Function CreateBranch(Const ABranch: TBranch): TBranch;
+        Function UpdateBranchPartial(Const AID: Integer; Const ABranch: TBranch): TBranch;
+        Function DeleteBranch(Const AID: Integer): Boolean;
+    End;
+
+    {Upload file}
+    IUploadFileService = Interface ['{6473BD6E-0574-4673-A2AB-BA572381D82B}']
+        Function GetSalesConsultantSheet(
+          Const AFileResultService: IFileResultContactCustomerService;
+          Const ALeadPlatformRaw: TObjectList<TLeadPlatformRaw>;
+          Const AUserID: String;
+          Const AFileName: String;
+          Const AFileSize: String): Boolean;
+    End;
+
+    IPeopleService = interface
+      ['{24924BD4-3BB5-4923-8F8F-D64A220966E2}']
+      function GetAll: TObjectList<TPerson>;
+    end;
+
+    Procedure RegisterServices(Container: IMVCServiceContainer);
+
+Implementation
+
+Uses
+    Service.User,
+    Service.Upload,
+    Service.Branch.Branch,
+    Service.Sale.SaleAgent,
+    Service.Sale.Campaign,
+    Service.Lead.FileResultContactCustomer,
+    Service.Lead.PotentialLevel,
+    Service.Lead.CustomerStatus,
+    Service.Customer.Customer,
+    Service.Car.Car,
+    Service.Car.Category,
+    Service.Car.Company,
+    Service.Customer.Assignment,
+    Service.Organization.Employee,
+    Service.Lead.PhoneAssignment,
+    Service.Contract.FileResultContract,
+    Service.ContractUpload,
+    Service.UploadImage,
+    Service.Lead.SourceCollectingData,
+    Service.Contract,
+    Service.Novinhub;
+
+//________________________________________________________________________________________
+Procedure RegisterServices(Container: IMVCServiceContainer);
+Begin
+    Container.RegisterType(TUserService, IUserService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TNovinhubService, INovinhubService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TContractService, IContractService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TSourceCollectingDataService, ISourceCollectingDataService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TImageUploadService, IImageUploadService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TContractUploadService, IContractUploadService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TFileResultContractService, IFileResultContractService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TPhoneAssignmentService, IPhoneAssignmentService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TEmployeeService, IEmployeeService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TCarCompanyService, ICarCompanyService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TCarCategoryService, ICarCategoryService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TCarService, ICarService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TCustomerStatusService, ICustomerStatusService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TCustomerService, ICustomerService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TPotentialLevelService, IPotentialLevelService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TFileResultContactCustomerService, IFileResultContactCustomerService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TCampaignService, ICampaignService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TUploadService, IUploadFileService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TBranchService, IBranchService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TSaleAgentService, ISaleAgentService, TRegistrationType.SingletonPerRequest);
+    Container.RegisterType(TCustomerAssignmentService, ICustomerAssignmentService, TRegistrationType.SingletonPerRequest);
+End;
+//________________________________________________________________________________________
+
+End.

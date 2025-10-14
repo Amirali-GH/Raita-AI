@@ -1,0 +1,479 @@
+﻿unit Service.Contract;
+
+interface
+
+uses
+  System.SysUtils,
+  System.Generics.Collections,
+  MVCFramework.ActiveRecord,
+  MVCFramework.Nullables,
+  Model.Contract,
+  Service.Interfaces;
+
+type
+  TContractService = class(TInterfacedObject, IContractService)
+  public
+      function GetAllContracts(var APage: string; const AStatus: string; const AContext: string): TObjectList<TContract>;
+      function GetContractByID(const AID: Integer): TContract;
+      function CreateContract(const AContract: TContract): TContract;
+      function UpdateContractPartial(const AID: Integer; const AContract: TContract): TContract;
+      function DeleteContract(const AID: Integer): Boolean;
+      function CreateSummery(Const ANationalCode: Integer): TContract;
+  end;
+
+implementation
+
+Uses
+    Utils, Math, StrUtils, WebModule.SalamtCRM, FireDAC.Comp.Client,
+    FireDAC.Stan.Param, Data.DB;
+
+{ TContractService }
+
+//________________________________________________________________________________________
+function TContractService.GetAllContracts(var APage: string; const AStatus: string; const AContext: string): TObjectList<TContract>;
+var
+  LCurrPage: Integer;
+  LFirstRec: Integer;
+  LStatusFilter, LSearchField: string;
+begin
+  LCurrPage := 0;
+  TryStrToInt(APage, LCurrPage);
+
+  LCurrPage := Max(LCurrPage, 1);
+  LFirstRec := (LCurrPage - 1) * PAGE_SIZE;
+  APage := LCurrPage.ToString;
+
+  // جستجو در فیلدهای کاربردی قرارداد
+  if (not AContext.IsEmpty) then
+  begin
+    LSearchField := Format(
+      '(Number LIKE %s OR Plate_Number LIKE %s OR Chassis_Number LIKE %s)',
+      [QuotedStr('%' + AContext + '%'), QuotedStr('%' + AContext + '%'), QuotedStr('%' + AContext + '%')]
+    );
+  end
+  else
+    LSearchField := '';
+
+  if (not LSearchField.IsEmpty) and (not LStatusFilter.IsEmpty) then
+    LStatusFilter := ' AND ' + LStatusFilter;
+
+  Result := TMVCActiveRecord.Where<TContract>(
+    LSearchField + LStatusFilter + ' ORDER BY Number ASC limit ?,?',
+    [LFirstRec, PAGE_SIZE]
+  );
+end;
+
+function TContractService.GetContractByID(const AID: Integer): TContract;
+begin
+  Result := TMVCActiveRecord.GetByPK<TContract>(AID, False);
+end;
+
+function TContractService.CreateContract(const AContract: TContract): TContract;
+var
+  LCopy: TContract;
+begin
+  LCopy := TContract.Create;
+  try
+    // Map common fields (بسته به نیازت می‌تونی فیلدهای بیشتری اضافه کنی)
+    LCopy.Number := AContract.Number;
+    LCopy.Date_ := AContract.Date_;
+    LCopy.GregorianDate := AContract.GregorianDate;
+
+    LCopy.RequestNumber := AContract.RequestNumber;
+    LCopy.RequestDate := AContract.RequestDate;
+    LCopy.RequestGregorianDate := AContract.RequestGregorianDate;
+
+    // فیلدهای عددی که nullable هستند را کپی کن
+    LCopy.DeliveryDealershipID := AContract.DeliveryDealershipID;
+    LCopy.GuarantorCustomerID := AContract.GuarantorCustomerID;
+    LCopy.AssignorCustomerID := AContract.AssignorCustomerID;
+
+    // بقیه فیلدهای NullableString
+    LCopy.Gateway := AContract.Gateway;
+    LCopy.Region := AContract.Region;
+    LCopy.DeliveryDate := AContract.DeliveryDate;
+    LCopy.DeliveryDueDays := AContract.DeliveryDueDays;
+    LCopy.AssignableChassis10thDigit := AContract.AssignableChassis10thDigit;
+    LCopy.ChassisNumber := AContract.ChassisNumber;
+    LCopy.DeliveryMonth := AContract.DeliveryMonth;
+    LCopy.DeliveryLocation := AContract.DeliveryLocation;
+
+    LCopy.RegistrationDocsStatus := AContract.RegistrationDocsStatus;
+    LCopy.FinalPaymentDocsStatus := AContract.FinalPaymentDocsStatus;
+    LCopy.InvoiceNotIssuedStatus := AContract.InvoiceNotIssuedStatus;
+    LCopy.VerificationDocsStatus := AContract.VerificationDocsStatus;
+    LCopy.ChassisStatus := AContract.ChassisStatus;
+
+    LCopy.AllocationDate := AContract.AllocationDate;
+    LCopy.AllocationGregorianDate := AContract.AllocationGregorianDate;
+    LCopy.PlatingDate := AContract.PlatingDate;
+    LCopy.PlatingGregorianDate := AContract.PlatingGregorianDate;
+    LCopy.PlatingGregorianDate1 := AContract.PlatingGregorianDate1;
+
+    LCopy.DocumentDate := AContract.DocumentDate;
+    LCopy.DocumentStatus := AContract.DocumentStatus;
+    LCopy.PhysicalDeliveryDate := AContract.PhysicalDeliveryDate;
+    LCopy.PlateNumber := AContract.PlateNumber;
+    LCopy.CancellationDate := AContract.CancellationDate;
+
+    LCopy.ContractStatus := AContract.ContractStatus;
+    LCopy.SaleType := AContract.SaleType;
+    LCopy.CustomerPaymentDate := AContract.CustomerPaymentDate;
+    LCopy.FinalPaymentDate := AContract.FinalPaymentDate;
+    LCopy.AccountingApprovalDate := AContract.AccountingApprovalDate;
+    LCopy.InvitationNumber := AContract.InvitationNumber;
+    LCopy.RequestTimestamp := AContract.RequestTimestamp;
+
+    LCopy.ApprovedPrice := AContract.ApprovedPrice;
+    LCopy.PriceType := AContract.PriceType;
+    LCopy.DiscountAmount := AContract.DiscountAmount;
+    LCopy.TotalAmountReceived := AContract.TotalAmountReceived;
+
+    LCopy.ContractFormatType := AContract.ContractFormatType;
+    LCopy.AssignmentStatus := AContract.AssignmentStatus;
+    LCopy.Status := AContract.Status;
+    LCopy.Cancellation := AContract.Cancellation;
+
+    LCopy.Organization := AContract.Organization;
+    LCopy.KardexNumber := AContract.KardexNumber;
+    LCopy.KardexDate := AContract.KardexDate;
+    LCopy.CancellationIBAN := AContract.CancellationIBAN;
+    LCopy.TotalChecksAmount := AContract.TotalChecksAmount;
+    LCopy.NumberOfChecks := AContract.NumberOfChecks;
+    LCopy.Organization1 := AContract.Organization1;
+
+    LCopy.RequestCreatorUser := AContract.RequestCreatorUser;
+    LCopy.DocumentType := AContract.DocumentType;
+    LCopy.IsContractBlacklisted := AContract.IsContractBlacklisted;
+    LCopy.IsCustomerBlacklisted := AContract.IsCustomerBlacklisted;
+    LCopy.LastIssuedInvitation := AContract.LastIssuedInvitation;
+    LCopy.LastCompletedPaymentInvitation := AContract.LastCompletedPaymentInvitation;
+
+    LCopy.FirstSignatureDate := AContract.FirstSignatureDate;
+    LCopy.FirstSignatory := AContract.FirstSignatory;
+    LCopy.SecondSignatureDate := AContract.SecondSignatureDate;
+    LCopy.SecondSignatory := AContract.SecondSignatory;
+
+    LCopy.CustomerOutstandingBalance := AContract.CustomerOutstandingBalance;
+    LCopy.ChecksCountAfterKardex := AContract.ChecksCountAfterKardex;
+    LCopy.ScrappingCertificateDate := AContract.ScrappingCertificateDate;
+
+    // برخی فیلدهای غیر-nullable (ID ها) — اگر مقداردهی لازم است خودت مقدار بده
+    LCopy.CustomerID := AContract.CustomerID;
+    LCopy.DealershipID := AContract.DealershipID;
+    LCopy.VehicleTypeID := AContract.VehicleTypeID;
+    LCopy.ColorID := AContract.ColorID;
+    LCopy.SalesLicenseID := AContract.SalesLicenseID;
+    LCopy.PaymentMethodID := AContract.PaymentMethodID;
+    LCopy.ContractFileID := AContract.ContractFileID;
+
+    // درج در DB
+    LCopy.Insert;
+    Result := GetContractByID(LCopy.ID);
+  except
+    LCopy.Free;
+    raise;
+  end;
+end;
+
+function TContractService.UpdateContractPartial(const AID: Integer; const AContract: TContract): TContract;
+var
+  LExisting: TContract;
+begin
+  LExisting := TMVCActiveRecord.GetByPK<TContract>(AID, False);
+  if not Assigned(LExisting) then
+    Exit(nil);
+
+  try
+    // برای NullableString ها بررسی HasValue و برای برخی رشته‌ها IsEmpty مانند نمونه قبلی
+    if (not AContract.Number.HasValue) then
+      LExisting.Number := AContract.Number;
+
+    if AContract.Date_.HasValue then
+      LExisting.Date_ := AContract.Date_;
+
+    if AContract.GregorianDate.HasValue then
+      LExisting.GregorianDate := AContract.GregorianDate;
+
+    if AContract.RequestNumber.HasValue then
+      LExisting.RequestNumber := AContract.RequestNumber;
+
+    if AContract.RequestDate.HasValue then
+      LExisting.RequestDate := AContract.RequestDate;
+
+    if AContract.RequestGregorianDate.HasValue then
+      LExisting.RequestGregorianDate := AContract.RequestGregorianDate;
+
+    // توجه: فیلدهای Int64 غیر nullable را فقط در صورت نیاز صریح تغییر بده
+    // برای NullableInt64 ها از HasValue استفاده کن
+    if AContract.DeliveryDealershipID.HasValue then
+      LExisting.DeliveryDealershipID := AContract.DeliveryDealershipID;
+
+    if AContract.GuarantorCustomerID.HasValue then
+      LExisting.GuarantorCustomerID := AContract.GuarantorCustomerID;
+
+    if AContract.AssignorCustomerID.HasValue then
+      LExisting.AssignorCustomerID := AContract.AssignorCustomerID;
+
+    // بقیه NullableString ها
+    if AContract.Gateway.HasValue then
+      LExisting.Gateway := AContract.Gateway;
+
+    if AContract.Region.HasValue then
+      LExisting.Region := AContract.Region;
+
+    if AContract.DeliveryDate.HasValue then
+      LExisting.DeliveryDate := AContract.DeliveryDate;
+
+    if AContract.DeliveryDueDays.HasValue then
+      LExisting.DeliveryDueDays := AContract.DeliveryDueDays;
+
+    if AContract.AssignableChassis10thDigit.HasValue then
+      LExisting.AssignableChassis10thDigit := AContract.AssignableChassis10thDigit;
+
+    if AContract.ChassisNumber.HasValue then
+      LExisting.ChassisNumber := AContract.ChassisNumber;
+
+    if AContract.DeliveryMonth.HasValue then
+      LExisting.DeliveryMonth := AContract.DeliveryMonth;
+
+    if AContract.DeliveryLocation.HasValue then
+      LExisting.DeliveryLocation := AContract.DeliveryLocation;
+
+    if AContract.RegistrationDocsStatus.HasValue then
+      LExisting.RegistrationDocsStatus := AContract.RegistrationDocsStatus;
+
+    if AContract.FinalPaymentDocsStatus.HasValue then
+      LExisting.FinalPaymentDocsStatus := AContract.FinalPaymentDocsStatus;
+
+    if AContract.InvoiceNotIssuedStatus.HasValue then
+      LExisting.InvoiceNotIssuedStatus := AContract.InvoiceNotIssuedStatus;
+
+    if AContract.VerificationDocsStatus.HasValue then
+      LExisting.VerificationDocsStatus := AContract.VerificationDocsStatus;
+
+    if AContract.ChassisStatus.HasValue then
+      LExisting.ChassisStatus := AContract.ChassisStatus;
+
+    if AContract.AllocationDate.HasValue then
+      LExisting.AllocationDate := AContract.AllocationDate;
+
+    if AContract.AllocationGregorianDate.HasValue then
+      LExisting.AllocationGregorianDate := AContract.AllocationGregorianDate;
+
+    if AContract.PlatingDate.HasValue then
+      LExisting.PlatingDate := AContract.PlatingDate;
+
+    if AContract.PlatingGregorianDate.HasValue then
+      LExisting.PlatingGregorianDate := AContract.PlatingGregorianDate;
+
+    if AContract.PlatingGregorianDate1.HasValue then
+      LExisting.PlatingGregorianDate1 := AContract.PlatingGregorianDate1;
+
+    if AContract.DocumentDate.HasValue then
+      LExisting.DocumentDate := AContract.DocumentDate;
+
+    if AContract.DocumentStatus.HasValue then
+      LExisting.DocumentStatus := AContract.DocumentStatus;
+
+    if AContract.PhysicalDeliveryDate.HasValue then
+      LExisting.PhysicalDeliveryDate := AContract.PhysicalDeliveryDate;
+
+    if AContract.PlateNumber.HasValue then
+      LExisting.PlateNumber := AContract.PlateNumber;
+
+    if AContract.CancellationDate.HasValue then
+      LExisting.CancellationDate := AContract.CancellationDate;
+
+    if AContract.ContractStatus.HasValue then
+      LExisting.ContractStatus := AContract.ContractStatus;
+
+    if AContract.SaleType.HasValue then
+      LExisting.SaleType := AContract.SaleType;
+
+    if AContract.CustomerPaymentDate.HasValue then
+      LExisting.CustomerPaymentDate := AContract.CustomerPaymentDate;
+
+    if AContract.FinalPaymentDate.HasValue then
+      LExisting.FinalPaymentDate := AContract.FinalPaymentDate;
+
+    if AContract.AccountingApprovalDate.HasValue then
+      LExisting.AccountingApprovalDate := AContract.AccountingApprovalDate;
+
+    if AContract.InvitationNumber.HasValue then
+      LExisting.InvitationNumber := AContract.InvitationNumber;
+
+    if AContract.RequestTimestamp.HasValue then
+      LExisting.RequestTimestamp := AContract.RequestTimestamp;
+
+    if AContract.ApprovedPrice.HasValue then
+      LExisting.ApprovedPrice := AContract.ApprovedPrice;
+
+    if AContract.PriceType.HasValue then
+      LExisting.PriceType := AContract.PriceType;
+
+    if AContract.DiscountAmount.HasValue then
+      LExisting.DiscountAmount := AContract.DiscountAmount;
+
+    if AContract.TotalAmountReceived.HasValue then
+      LExisting.TotalAmountReceived := AContract.TotalAmountReceived;
+
+    if AContract.ContractFormatType.HasValue then
+      LExisting.ContractFormatType := AContract.ContractFormatType;
+
+    if AContract.AssignmentStatus.HasValue then
+      LExisting.AssignmentStatus := AContract.AssignmentStatus;
+
+    if AContract.Status.HasValue then
+      LExisting.Status := AContract.Status;
+
+    if AContract.Cancellation.HasValue then
+      LExisting.Cancellation := AContract.Cancellation;
+
+    if AContract.Organization.HasValue then
+      LExisting.Organization := AContract.Organization;
+
+    if AContract.KardexNumber.HasValue then
+      LExisting.KardexNumber := AContract.KardexNumber;
+
+    if AContract.KardexDate.HasValue then
+      LExisting.KardexDate := AContract.KardexDate;
+
+    if AContract.CancellationIBAN.HasValue then
+      LExisting.CancellationIBAN := AContract.CancellationIBAN;
+
+    if AContract.TotalChecksAmount.HasValue then
+      LExisting.TotalChecksAmount := AContract.TotalChecksAmount;
+
+    if AContract.NumberOfChecks.HasValue then
+      LExisting.NumberOfChecks := AContract.NumberOfChecks;
+
+    if AContract.Organization1.HasValue then
+      LExisting.Organization1 := AContract.Organization1;
+
+    if AContract.RequestCreatorUser.HasValue then
+      LExisting.RequestCreatorUser := AContract.RequestCreatorUser;
+
+    if AContract.DocumentType.HasValue then
+      LExisting.DocumentType := AContract.DocumentType;
+
+    if AContract.IsContractBlacklisted.HasValue then
+      LExisting.IsContractBlacklisted := AContract.IsContractBlacklisted;
+
+    if AContract.IsCustomerBlacklisted.HasValue then
+      LExisting.IsCustomerBlacklisted := AContract.IsCustomerBlacklisted;
+
+    if AContract.LastIssuedInvitation.HasValue then
+      LExisting.LastIssuedInvitation := AContract.LastIssuedInvitation;
+
+    if AContract.LastCompletedPaymentInvitation.HasValue then
+      LExisting.LastCompletedPaymentInvitation := AContract.LastCompletedPaymentInvitation;
+
+    if AContract.FirstSignatureDate.HasValue then
+      LExisting.FirstSignatureDate := AContract.FirstSignatureDate;
+
+    if AContract.FirstSignatory.HasValue then
+      LExisting.FirstSignatory := AContract.FirstSignatory;
+
+    if AContract.SecondSignatureDate.HasValue then
+      LExisting.SecondSignatureDate := AContract.SecondSignatureDate;
+
+    if AContract.SecondSignatory.HasValue then
+      LExisting.SecondSignatory := AContract.SecondSignatory;
+
+    if AContract.CustomerOutstandingBalance.HasValue then
+      LExisting.CustomerOutstandingBalance := AContract.CustomerOutstandingBalance;
+
+    if AContract.ChecksCountAfterKardex.HasValue then
+      LExisting.ChecksCountAfterKardex := AContract.ChecksCountAfterKardex;
+
+    if AContract.ScrappingCertificateDate.HasValue then
+      LExisting.ScrappingCertificateDate := AContract.ScrappingCertificateDate;
+
+    if (AContract.ContractFileID.HasValue) then
+      LExisting.ContractFileID := AContract.ContractFileID;
+
+    LExisting.Update;
+    Result := LExisting;
+  except
+    LExisting.Free;
+    raise;
+  end;
+end;
+//________________________________________________________________________________________
+function TContractService.CreateSummery(const ANationalCode: Integer): TContract;
+var
+    Q: TFDQuery;
+    LCustomerID, LContractID: Int64;
+begin
+    Q := TFDQuery.Create(nil);
+    try
+        Q.Connection := TMVCActiveRecord.CurrentConnection;
+
+        Q.SQL.Text := 'SELECT ID FROM contract_customers WHERE National_ID = :NC';
+        Q.ParamByName('NC').AsString := ANationalCode.ToString;
+        Q.Open;
+
+        If (not Q.IsEmpty) then
+        Begin
+            LCustomerID := Q.FieldByName('ID').AsLargeInt
+        End
+        Else
+        Begin
+            // 2. درج مشتری جدید
+            Q.Close;
+            Q.SQL.Text :=
+              'INSERT INTO contract_customers (National_ID, Full_Name, Type, City, Postal_Code) ' +
+              'VALUES (:NC, NULL, NULL, NULL, NULL)';
+            Q.ParamByName('NC').AsString := ANationalCode.ToString;
+            Q.ExecSQL;
+
+            // گرفتن ID مشتری جدید
+            Q.Close;
+            Q.SQL.Text := 'SELECT LAST_INSERT_ID() AS NewID';
+            Q.Open;
+            LCustomerID := Q.FieldByName('NewID').AsLargeInt;
+        End;
+
+        // 3. درج قرارداد جدید
+        Q.Close;
+        Q.SQL.Text :=
+          'INSERT INTO contract_contracts (Customer_ID, Number, Date, Gregorian_Date) ' +
+          'VALUES (:CID, NULL, NULL, NULL)';
+        Q.ParamByName('CID').AsLargeInt := LCustomerID;
+        Q.ExecSQL;
+
+        // گرفتن ID قرارداد
+        Q.Close;
+        Q.SQL.Text := 'SELECT LAST_INSERT_ID() AS NewID';
+        Q.Open;
+        LContractID := Q.FieldByName('NewID').AsLargeInt;
+
+        // 4. ساخت آبجکت TContract و پر کردن اطلاعات پایه
+        Result := TContract.Create;
+        Result.ID := LContractID;
+        Result.CustomerID := LCustomerID;
+    Finally
+        Q.Free;
+    End;
+End;
+//________________________________________________________________________________________
+function TContractService.DeleteContract(const AID: Integer): Boolean;
+var
+  LExisting: TContract;
+begin
+  LExisting := TMVCActiveRecord.GetByPK<TContract>(AID, False);
+  if not Assigned(LExisting) then
+    Exit(False);
+
+  try
+    LExisting.Delete;
+    Result := True;
+  finally
+    LExisting.Free;
+  end;
+end;
+//________________________________________________________________________________________
+
+end.
+

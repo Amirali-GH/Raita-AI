@@ -1,0 +1,525 @@
+﻿unit Controller.Contract;
+
+interface
+
+uses
+    System.SysUtils,
+    System.Classes,
+    System.Generics.Collections,
+    MVCFramework,
+    MVCFramework.Commons,
+    MVCFramework.ActiveRecord,
+    MVCFramework.Swagger.Commons,
+    MVCFramework.Nullables,
+    Service.Interfaces,
+    Model.Contract,
+    WebModule.SalamtCRM;
+
+type
+    [MVCPath(BASE_API_V1 + '/contract')]
+    TContractController = class(TMVCController)
+    public
+        [MVCPath('')]
+        [MVCHTTPMethods([httpGET])]
+        [MVCProduces(TMVCMediaType.APPLICATION_JSON)]
+        [MVCConsumes(TMVCMediaType.APPLICATION_JSON)]
+        procedure GetAllContracts(const [MVCInject] AContractService: IContractService);
+
+        [MVCPath('/summary/($ANationalCode)')]
+        [MVCHTTPMethods([httpPOST])]
+        [MVCProduces(TMVCMediaType.APPLICATION_JSON)]
+        [MVCConsumes(TMVCMediaType.APPLICATION_JSON)]
+        procedure CreateContractSummary(const ANationalCode: string; const [MVCInject] AContractService: IContractService);
+
+        [MVCPath('/($AContractID)')]
+        [MVCHTTPMethods([httpGET])]
+        [MVCProduces(TMVCMediaType.APPLICATION_JSON)]
+        [MVCConsumes(TMVCMediaType.APPLICATION_JSON)]
+        procedure GetContractByID(const AContractID: string; const [MVCInject] AContractService: IContractService);
+
+
+        [MVCPath('')]
+        [MVCHTTPMethods([httpPOST])]
+        [MVCProduces(TMVCMediaType.APPLICATION_JSON)]
+        [MVCConsumes(TMVCMediaType.APPLICATION_JSON)]
+        procedure CreateContract(const [MVCInject] AContractService: IContractService);
+
+        [MVCPath('/($AContractID)')]
+        [MVCHTTPMethods([httpPUT])]
+        [MVCProduces(TMVCMediaType.APPLICATION_JSON)]
+        [MVCConsumes(TMVCMediaType.APPLICATION_JSON)]
+        procedure UpdateContract(const AContractID: string; const [MVCInject] AContractService: IContractService);
+
+        [MVCPath('/($AContractID)')]
+        [MVCHTTPMethods([httpDELETE])]
+        [MVCProduces(TMVCMediaType.APPLICATION_JSON)]
+        [MVCConsumes(TMVCMediaType.APPLICATION_JSON)]
+        procedure DeleteContract(const AContractID: string; const [MVCInject] AContractService: IContractService);
+    end;
+
+implementation
+
+uses
+    MVCFramework.Serializer.Commons,
+    System.JSON, FireDAC.Stan.Error;
+
+{ TContractController }
+
+procedure TContractController.GetAllContracts(const AContractService: IContractService);
+var
+    LList: TObjectList<TContract>;
+    LEqualIndex: Integer;
+    LPageArrayData: TArray<string>;
+    LCurrPage, LPageData, Key, Value, LStatus, LContext: string;
+    LMetaJSON, LPageJSON: TJSONObject;
+begin
+    LMetaJSON := TJSONObject.Create;
+    try
+        try
+            LCurrPage := Context.Request.Params['page'];
+            LStatus := Context.Request.Params['status'];
+            LContext := Context.Request.Params['context'];
+
+            LList := AContractService.GetAllContracts(LCurrPage, LStatus, LContext);
+            if Assigned(LList) then
+            begin
+                LPageJSON := TJSONObject.Create;
+                try
+                    LPageArrayData := GetPaginationData(LCurrPage.ToInteger,
+                                                        LList.Count,
+                                                        PAGE_SIZE,
+                                                        BASE_API_V1 + '/contract?page=($page)')
+                                                      .ToString.Split([';']);
+                    for LPageData in LPageArrayData do
+                    begin
+                        LEqualIndex := LPageData.IndexOf('=');
+                        if (LEqualIndex > 0) then
+                        begin
+                            Key := LPageData.Substring(0, LEqualIndex).Trim;
+                            Value := LPageData.Substring(LEqualIndex + 1).Trim;
+                            LPageJSON.AddPair(Key, Value);
+                        end;
+                    end;
+
+                    LMetaJSON.AddPair('page', LPageJSON);
+                    LMetaJSON.AddPair('data_type', 'list<model_contract>');
+                    LMetaJSON.AddPair('count', LList.Count);
+                    LMetaJSON.AddPair('is_success', True);
+                    LMetaJSON.AddPair('description', 'لیست تمام قراردادها');
+
+                    Render(HTTP_STATUS.OK,
+                        ObjectDict(False)
+                          .Add('meta', StrToJSONObject(LMetaJSON.ToString))
+                          .Add('data', LList,
+                              procedure(const Obj: TObject; const Links: IMVCLinks)
+                              begin
+                                  Links.AddRefLink
+                                        .Add(HATEOAS._TYPE, TMVCMediaType.APPLICATION_JSON)
+                                        .Add(HATEOAS.HREF, Format(BASE_API_V1 + '/contract/%d', [TContract(Obj).ID]))
+                                        .Add(HATEOAS.REL, 'self');
+                              end)
+                    );
+                finally
+                    LList.Free;
+                end;
+            end
+            else
+            begin
+                raise Exception.Create('هنگام خواندن قراردادها خطایی رخ داده است!');
+            end;
+        except
+            on E: Exception do
+            begin
+                LMetaJSON.AddPair('data_type', 'list<model_contract>');
+                LMetaJSON.AddPair('count', 0);
+                LMetaJSON.AddPair('is_success', False);
+                LMetaJSON.AddPair('description', E.Message);
+
+                Render(HTTP_STATUS.InternalServerError,
+                    ObjectDict(True)
+                      .Add('meta', StrToJSONObject(LMetaJSON.ToString))
+                      .Add('data', TList.Create)
+                );
+            end;
+        end;
+    finally
+        LMetaJSON.Free;
+    end;
+end;
+//________________________________________________________________________________________
+procedure TContractController.GetContractByID(const AContractID: string; const AContractService: IContractService);
+var
+    LStatusCode, LID: Integer;
+    LContract: TContract;
+    LMetaJSON: TJSONObject;
+begin
+    LMetaJSON := TJSONObject.Create;
+    try
+        LStatusCode := HTTP_STATUS.InternalServerError;
+        try
+            if (AContractID.IsEmpty) or (not TryStrToInt(AContractID, LID)) then
+            begin
+                LStatusCode := HTTP_STATUS.NotFound;
+                raise EMVCException.Create('شناسه قرارداد نامعتبر است!');
+            end;
+
+            LContract := AContractService.GetContractByID(LID);
+            if Assigned(LContract) then
+            begin
+                try
+                    LStatusCode := HTTP_STATUS.OK;
+
+                    LMetaJSON.AddPair('data_type', 'model_contract');
+                    LMetaJSON.AddPair('count', 1);
+                    LMetaJSON.AddPair('is_success', True);
+                    LMetaJSON.AddPair('description', Format('قرارداد با شناسه %d یافت شد.', [LContract.ID]));
+
+                    Render(LStatusCode,
+                        ObjectDict(False)
+                          .Add('meta', StrToJSONObject(LMetaJSON.ToString))
+                          .Add('data', LContract)
+                    );
+                finally
+                    LContract.Free;
+                end;
+            end
+            else
+            begin
+                LStatusCode := HTTP_STATUS.NotFound;
+                raise EMVCException.Create('قرارداد یافت نشد');
+            end;
+        except
+            on E: Exception do
+            begin
+                LMetaJSON.AddPair('data_type', 'model_contract');
+                LMetaJSON.AddPair('count', 0);
+                LMetaJSON.AddPair('is_success', False);
+                LMetaJSON.AddPair('description', E.Message);
+
+                Render(LStatusCode,
+                    ObjectDict(True)
+                      .Add('meta', StrToJSONObject(LMetaJSON.ToString))
+                      .Add('data', TMVCObjectDictionary.Create())
+                );
+            end;
+        end;
+    finally
+        LMetaJSON.Free;
+    end;
+end;
+//________________________________________________________________________________________
+Procedure TContractController.CreateContractSummary(Const ANationalCode: String;
+  Const AContractService: IContractService);
+Var
+    LCreated: TContract;
+    LMetaJSON: TJSONObject;
+    LStatusCode: Integer;
+Begin
+    LMetaJSON := TJSONObject.Create;
+    Try
+        If ANationalCode.Trim.IsEmpty then
+        Begin
+            LStatusCode := HTTP_STATUS.BadRequest;
+            raise EMVCException.Create('کد ملی ورودی نامعتبر است');
+        End;
+
+        Try
+            LCreated := nil;
+            try
+              // فراخوانی سرویس برای ایجاد مشتری و قرارداد
+              LCreated := AContractService.CreateSummery(StrToInt64(ANationalCode));
+            Except
+                On E: EFDException do
+                Begin
+                    if Assigned(LCreated) then
+                      LCreated.Free;
+
+                    if Pos('duplicate', E.Message.ToLower) > 0 then
+                    begin
+                        LStatusCode := HTTP_STATUS.Conflict;
+                        raise EMVCException.Create('رکورد تکراری در پایگاه داده');
+                    end
+                    else
+                    Begin
+                        raise EMVCException.Create('خطای پایگاه داده: ' + E.Message)
+                    End;
+                End;
+
+                On E: Exception do
+                Begin
+                    Raise EMVCException.Create(E.Message);
+                End;
+            end;
+
+            Try
+                LStatusCode := HTTP_STATUS.Created;
+
+                LMetaJSON.AddPair('data_type', 'model_contract');
+                LMetaJSON.AddPair('count', 1);
+                LMetaJSON.AddPair('is_success', True);
+                LMetaJSON.AddPair('url', BASE_API_V1 + '/contract/' + LCreated.ID.ToString);
+                LMetaJSON.AddPair('description', 'قرارداد و مشتری با موفقیت ایجاد شد.');
+
+                Render(LStatusCode,
+                  ObjectDict(False)
+                    .Add('meta', StrToJSONObject(LMetaJSON.ToString))
+                    .Add('data', LCreated)
+                );
+            Finally
+                LCreated.Free;
+            End;
+
+        Except
+            On E: Exception do
+            Begin
+                LMetaJSON.AddPair('data_type', 'model_contract');
+                LMetaJSON.AddPair('count', 0);
+                LMetaJSON.AddPair('is_success', False);
+                LMetaJSON.AddPair('description', E.Message);
+
+                Render(LStatusCode,
+                  ObjectDict(True)
+                    .Add('meta', StrToJSONObject(LMetaJSON.ToString))
+                    .Add('data', TMVCObjectDictionary.Create())
+                );
+            End;
+        End;
+    Finally
+      LMetaJSON.Free;
+    End;
+End;
+//________________________________________________________________________________________
+procedure TContractController.UpdateContract(const AContractID: string; const AContractService: IContractService);
+var
+    LID: Integer;
+    LInput, LUpdated: TContract;
+    LMetaJSON: TJSONObject;
+    LStatusCode: Integer;
+begin
+    LMetaJSON := TJSONObject.Create;
+    try
+        LStatusCode := HTTP_STATUS.InternalServerError;
+        try
+            if (AContractID.IsEmpty) or (not TryStrToInt(AContractID, LID)) then
+            begin
+                LStatusCode := HTTP_STATUS.NotFound;
+                raise EMVCException.Create('شناسه قرارداد نامعتبر است!');
+            end;
+
+            LInput := Context.Request.BodyAs<TContract>;
+            if not Assigned(LInput) then
+            begin
+                LStatusCode := HTTP_STATUS.BadRequest;
+                raise EMVCException.Create('داده ورودی نامعتبر است');
+            end;
+
+            try
+                try
+                    LUpdated := AContractService.UpdateContractPartial(LID, LInput);
+                except
+                    on E: EFDException do
+                    begin
+                        if Pos('duplicate', E.Message.ToLower) > 0 then
+                        begin
+                            LStatusCode := HTTP_STATUS.Conflict;
+                            raise EMVCException.Create('مقدار تکراری در پایگاه داده');
+                        end
+                        else
+                        begin
+                            raise EMVCException.Create('خطای پایگاه داده: ' + E.Message);
+                        end;
+                    end;
+
+                    on E: Exception do
+                    begin
+                        raise EMVCException.Create(E.Message);
+                    end;
+                end;
+
+                if not Assigned(LUpdated) then
+                begin
+                    LStatusCode := HTTP_STATUS.NotFound;
+                    raise EMVCException.Create('قرارداد یافت نشد');
+                end;
+
+                try
+                    LStatusCode := HTTP_STATUS.OK;
+
+                    LMetaJSON.AddPair('data_type', 'model_contract');
+                    LMetaJSON.AddPair('count', 1);
+                    LMetaJSON.AddPair('is_success', True);
+                    LMetaJSON.AddPair('description', 'قرارداد با موفقیت بروزرسانی شد.');
+
+                    Render(LStatusCode,
+                        ObjectDict(False)
+                          .Add('meta', StrToJSONObject(LMetaJSON.ToString))
+                          .Add('data', LUpdated)
+                    );
+                finally
+                    LUpdated.Free;
+                end;
+            finally
+                LInput.Free;
+            end;
+        except
+            on E: Exception do
+            begin
+                LMetaJSON.AddPair('data_type', 'model_contract');
+                LMetaJSON.AddPair('count', 0);
+                LMetaJSON.AddPair('is_success', False);
+                LMetaJSON.AddPair('description', E.Message);
+
+                Render(LStatusCode,
+                    ObjectDict(True)
+                      .Add('meta', StrToJSONObject(LMetaJSON.ToString))
+                      .Add('data', TMVCObjectDictionary.Create())
+                );
+            end;
+        end;
+    finally
+        LMetaJSON.Free;
+    end;
+end;
+//________________________________________________________________________________________
+procedure TContractController.CreateContract(const AContractService: IContractService);
+var
+  LInput, LCreated: TContract;
+  LMetaJSON: TJSONObject;
+  LStatusCode: Integer;
+begin
+  LMetaJSON := TJSONObject.Create;
+  try
+    LStatusCode := HTTP_STATUS.InternalServerError;
+    try
+      LInput := Context.Request.BodyAs<TContract>;
+      if not Assigned(LInput) then
+      begin
+        LStatusCode := HTTP_STATUS.BadRequest;
+        raise EMVCException.Create('داده ورودی نامعتبر است');
+      end;
+
+      try
+        LCreated := nil;
+        try
+          LCreated := AContractService.CreateContract(LInput);
+        except
+          on E: EFDException do
+          begin
+            if Assigned(LCreated) then
+              LCreated.Free;
+
+            if Pos('duplicate', E.Message.ToLower) > 0 then
+            begin
+              LStatusCode := HTTP_STATUS.Conflict;
+              raise EMVCException.Create('رکورد تکراری در پایگاه داده');
+            end
+            else
+            begin
+              raise EMVCException.Create('خطای پایگاه داده: ' + E.Message);
+            end;
+          end;
+
+          on E: Exception do
+          begin
+            raise EMVCException.Create(E.Message);
+          end;
+        end;
+
+        try
+          LStatusCode := HTTP_STATUS.Created;
+
+          LMetaJSON.AddPair('data_type', 'model_contract');
+          LMetaJSON.AddPair('count', 1);
+          LMetaJSON.AddPair('is_success', True);
+          LMetaJSON.AddPair('url', BASE_API_V1 + '/contract/' + LCreated.ID.ToString);
+          LMetaJSON.AddPair('description', 'قرارداد با موفقیت ذخیره شد.');
+
+          Render(LStatusCode,
+            ObjectDict(False)
+              .Add('meta', StrToJSONObject(LMetaJSON.ToString))
+              .Add('data', LCreated)
+          );
+        finally
+          LCreated.Free;
+        end;
+      finally
+        LInput.Free;
+      end;
+    except
+      on E: Exception do
+      begin
+        LMetaJSON.AddPair('data_type', 'model_contract');
+        LMetaJSON.AddPair('count', 0);
+        LMetaJSON.AddPair('is_success', False);
+        LMetaJSON.AddPair('description', E.Message);
+
+        Render(LStatusCode,
+          ObjectDict(True)
+            .Add('meta', StrToJSONObject(LMetaJSON.ToString))
+            .Add('data', TMVCObjectDictionary.Create())
+        );
+      end;
+    end;
+  finally
+    LMetaJSON.Free;
+  end;
+end;
+//________________________________________________________________________________________
+procedure TContractController.DeleteContract(const AContractID: string; const AContractService: IContractService);
+var
+    LStatusCode, LID: Integer;
+    LMetaJSON: TJSONObject;
+begin
+    LMetaJSON := TJSONObject.Create;
+    try
+        LStatusCode := HTTP_STATUS.InternalServerError;
+        try
+            if (AContractID.IsEmpty) or (not TryStrToInt(AContractID, LID)) then
+            begin
+                LStatusCode := HTTP_STATUS.NotFound;
+                raise EMVCException.Create('شناسه قرارداد نامعتبر است!');
+            end;
+
+            if AContractService.DeleteContract(LID) then
+            begin
+                LStatusCode := HTTP_STATUS.OK;
+
+                LMetaJSON.AddPair('data_type', 'integer');
+                LMetaJSON.AddPair('count', 1);
+                LMetaJSON.AddPair('is_success', True);
+                LMetaJSON.AddPair('description', 'قرارداد با موفقیت حذف شد.');
+
+                Render(LStatusCode,
+                    ObjectDict(True)
+                      .Add('meta', StrToJSONObject(LMetaJSON.ToString))
+                      .Add('data', StrToJSONObject(TJSONObject.Create(TJSONPair.Create('id', LID)).ToString))
+                );
+            end
+            else
+            begin
+                LStatusCode := HTTP_STATUS.NotFound;
+                raise EMVCException.Create('قرارداد مورد نظر یافت نشد!');
+            end;
+        except
+            on E: Exception do
+            begin
+                LMetaJSON.AddPair('data_type', 'integer');
+                LMetaJSON.AddPair('count', 0);
+                LMetaJSON.AddPair('is_success', False);
+                LMetaJSON.AddPair('description', E.Message);
+
+                Render(LStatusCode,
+                    ObjectDict(True)
+                      .Add('meta', StrToJSONObject(LMetaJSON.ToString))
+                      .Add('data', TMVCObjectDictionary.Create())
+                );
+            end;
+        end;
+    finally
+        LMetaJSON.Free;
+    end;
+end;
+//________________________________________________________________________________________
+
+end.
+

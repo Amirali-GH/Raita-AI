@@ -1,0 +1,191 @@
+﻿Unit Controller.ContractUpload;
+
+Interface
+
+Uses
+    System.JSON,
+    MVCFramework,
+    MVCFramework.Commons,
+    MVCFramework.SQLGenerators.MSSQL,
+    MVCFramework.ActiveRecord,
+    MVCFramework.Nullables,
+    FireDAC.Phys.MSSQL,
+    System.Variants,
+    System.Generics.Collections,
+    Model.User,
+    IdHash,
+    Service.Interfaces,
+    WebModule.SalamtCRM, Model.ContractRaw,
+    Service.Contract.FileResultContract;  // Assuming a similar service for contracts
+
+Type
+    [MVCPath(BASE_API_V1 + '/upload')]
+    TContractUploadController = class(TMVCController)
+    Public
+        [MVCPath('/contract/sheet')]
+        [MVCHTTPMethods([httpPost])]
+        [MVCConsumes(TMVCMediaType.APPLICATION_JSON)]
+        Procedure GetContract(
+          Const [MVCInject] AContractUploadService: IContractUploadService;
+          Const [MVCInject] AFileResultService: IFileResultContractService;
+          Const [MVCFromBody] AContractRaw: TObjectList<TContractRaw>);
+
+        [MVCPath('/contract/national-code')]
+        [MVCHTTPMethods([httpPost])]
+        [MVCConsumes(TMVCMediaType.APPLICATION_JSON)]
+        Procedure PostNationalCode(
+          Const [MVCInject] AContractUploadService: IContractUploadService;
+          Const [MVCFromBody] ANationalCode: String);
+End;
+
+Implementation
+
+Uses
+    Web.ReqFiles,
+    System.SysUtils,
+    System.Classes,
+    MVCFramework.Logger,
+    Model.Contract.FileResultContract;  // Assuming a model for contract file result
+
+{ TContractUploadController }
+//________________________________________________________________________________________
+Procedure TContractUploadController.GetContract(
+    Const AContractUploadService: IContractUploadService;
+    Const AFileResultService: IFileResultContractService;
+    Const AContractRaw: TObjectList<TContractRaw>);
+Var
+    LFileSize, LUserID, LFileName, LContractTypeID: String;
+Begin
+    If (Context.Request.Body.IsEmpty) then
+        raise EMVCException.Create(HTTP_STATUS.NoContent, 'هیچ فایلی آپلود نشده است')
+
+    Else If (Not Assigned(AContractRaw)) then
+        raise EMVCException.Create(HTTP_STATUS.NotAcceptable, 'فرمت اکسل وارد شده درست نمی باشد!')
+
+    Else If (AContractRaw.IsEmpty) then
+        raise EMVCException.Create(HTTP_STATUS.NoContent, 'فایل آپلود شده حاوی هیچ اطلاعاتی نمی باشد!');
+
+    LUserID   := Context.LoggedUser.CustomData.Items['userid'];
+    LFileName := Context.Request.QueryStringParam('filename');
+    LFileSize := Context.Request.QueryStringParam('filesize');
+    LContractTypeID := Context.Request.QueryStringParam('contract_type_id');
+
+    If (LFileName.IsEmpty) then
+      raise EMVCException.Create(HTTP_STATUS.NoContent, 'نام فایل آپلود شده یافت نشد!')
+    Else If (LFileSize.IsEmpty) then
+      raise EMVCException.Create(HTTP_STATUS.NoContent, 'محاسبه ی اندازه ی فایل با مشکل مواجه شد!');
+
+    Try
+        If Not AContractUploadService.GetContractSheet(
+            AFileResultService,
+            AContractRaw,
+            LUserID,
+            LFileName,
+            LFileSize) then
+        Begin
+            Raise EMVCException.Create(HTTP_STATUS.InternalServerError,
+              'ذخیره‌سازی فایل با مشکل مواجه شد');
+        End;
+
+        Render(HTTP_STATUS.OK,'فایل با موفقیت ذخیره شد.');
+
+    Except
+        ON E: EMVCException do
+          raise;
+
+        ON E: Exception do
+        Begin
+            raise EMVCException.CreateFmt(HTTP_STATUS.InternalServerError,
+              'خطا در پردازش فایل: %s', [E.Message]);
+        End;
+    End;
+End;
+//________________________________________________________________________________________
+Procedure TContractUploadController.PostNationalCode(
+  const AContractUploadService: IContractUploadService; const ANationalCode: String);
+Var
+    LInput: TUser;
+    LCreated: TUser;
+    LMetaJSON: TJSONObject;
+    LStatusCode: Integer;
+Begin
+    LMetaJSON := TJSONObject.Create;
+    Try
+        LStatusCode := HTTP_STATUS.InternalServerError;
+        Try
+            LInput := Context.Request.BodyAs<TUser>;
+            If Not Assigned(LInput) Then
+            Begin
+                LStatusCode := HTTP_STATUS.BadRequest;
+                Raise EMVCException.Create('داده ورودی نامعتبر است');
+            End;
+
+            Try
+                LCreated := Nil;
+                Try
+                    LCreated := AUserService.CreateUser(LInput);
+                Except
+                    On E: EFDException do
+                    Begin
+                        If Assigned(LCreated) then
+                        Begin
+                            LCreated.Free;
+                        End;
+
+                        If Pos('duplicate', E.Message.ToLower) > 0 then
+                        Begin
+                            LStatusCode := HTTP_STATUS.Conflict;
+                            Raise EMVCException.Create('ایمیل یا شماره تلفن یا نام کاربری کاربر تکراری است');
+                        End
+                        Else
+                        Begin
+                            Raise EMVCException.Create('خطای پایگاه داده: ' + E.Message);
+                        End;
+                    End;
+
+                    On E: Exception do
+                    Begin
+                        Raise EMVCException.Create(E.Message);
+                    End;
+                End;
+
+                Try
+                    LStatusCode := HTTP_STATUS.Created;
+                    LMetaJSON.AddPair('data_type', 'model_cobtract');
+                    LMetaJSON.AddPair('count', 1);
+                    LMetaJSON.AddPair('is_success', True);
+                    LMetaJSON.AddPair('description', 'قرارداد خالی با موفقیت ایجاد شد');
+
+                    Render(LStatusCode,
+                        ObjectDict(False)
+                            .Add('meta', StrToJSONObject(LMetaJSON.ToString))
+                            .Add('data', LCreated)
+                    );
+                Finally
+                    LCreated.Free;
+                End;
+            Finally
+                LInput.Free;
+            End;
+        Except
+            On E: Exception do
+            Begin
+                LMetaJSON.AddPair('data_type', 'model_contract');
+                LMetaJSON.AddPair('count', 0);
+                LMetaJSON.AddPair('is_success', False);
+                LMetaJSON.AddPair('description', E.Message);
+
+                Render(LStatusCode,
+                    ObjectDict(True)
+                        .Add('meta', StrToJSONObject(LMetaJSON.ToString))
+                        .Add('data', TMVCObjectDictionary.Create)
+                );
+            End;
+        End;
+    Finally
+        LMetaJSON.Free;
+    End;
+End;
+//________________________________________________________________________________________
+
+End.

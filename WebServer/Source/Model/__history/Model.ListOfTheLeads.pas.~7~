@@ -1,0 +1,85 @@
+unit Model.ListOfTheLeads;
+
+Interface
+
+Uses
+    MVCFramework.ActiveRecord,
+    MVCFramework.Nullables,
+    MVCFramework.Serializer.Commons,
+    System.Generics.Collections;
+
+Type
+    [MVCNameCase(ncLowerCase)]
+    [MVCTable('vw_list_of_the_leads')]
+    [MVCEntityActions([eaRetrieve])]
+    TListOfTheLeads = Class(TMVCActiveRecord)
+    Private
+        [MVCTableField('CustomerID')]
+        FCustomerID: Int64;
+
+        [MVCTableField('Phone')]
+        FPhone: String;
+
+        [MVCTableField('FullName')]
+        FFullName: String;
+
+        [MVCTableField('NationalID')]
+        FNationalID: String;
+
+        [MVCTableField('RequestedCarName')]
+        FRequestedCarName: String;
+
+        [MVCTableField('BranchID')]
+        FBranchID: Integer;
+
+        [MVCTableField('BranchName')]
+        FBranchName: String;
+
+        [MVCTableField('SaleAgentName')]
+        FSaleAgentName: String;
+
+        [MVCTableField('LastContactDate_Shams')]
+        FLastContactDate_Shams: String;
+
+        [MVCTableField('CustomerStatus')]
+        FCustomerStatus: String;
+
+        [MVCTableField('CustomerStatusID')]
+        FCustomerStatusID: String;
+
+        [MVCTableField('Notes1')]
+        FNotes1: String;
+
+        [MVCTableField('Notes2')]
+        FNotes2: String;
+
+        [MVCTableField('Notes3')]
+        FNotes3: String;
+
+        [MVCTableField('PotentialCode')]
+        FPotentialCode: String;
+
+        [MVCTableField('CampaignCode')]
+        FCampaignCode: String;
+    Public
+        Property CustomerID: Int64 Read FCustomerID Write FCustomerID;
+        Property Phone: String Read FPhone Write FPhone;
+        Property FullName: String Read FFullName Write FFullName;
+        Property NationalID: String Read FNationalID Write FNationalID;
+        Property RequestedCarName: String Read FRequestedCarName Write FRequestedCarName;
+        Property BranchID: Integer Read FBranchID Write FBranchID;
+        Property BranchName: String Read FBranchName Write FBranchName;
+        Property SaleAgentName: String Read FSaleAgentName Write FSaleAgentName;
+        Property LastContactDate_Shams: String Read FLastContactDate_Shams Write FLastContactDate_Shams;
+        Property CustomerStatus: String Read FCustomerStatus Write FCustomerStatus;
+        Property CustomerStatusID: String Read FCustomerStatusID Write FCustomerStatusID;
+        Property Notes1: String Read FNotes1 Write FNotes1;
+        Property Notes2: String Read FNotes2 Write FNotes2;
+        Property Notes3: String Read FNotes3 Write FNotes3;
+        Property PotentialCode: String Read FPotentialCode Write FPotentialCode;
+        Property CampaignCode: String Read FCampaignCode Write FCampaignCode;
+    End;
+
+Implementation
+
+End.

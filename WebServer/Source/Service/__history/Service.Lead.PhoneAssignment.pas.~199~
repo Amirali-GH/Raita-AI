@@ -1,0 +1,559 @@
+﻿Unit Service.Lead.PhoneAssignment;
+
+Interface
+
+Uses
+    System.SysUtils,
+    System.Generics.Collections,
+    System.JSON,
+    MVCFramework.ActiveRecord,
+    MVCFramework.Nullables,
+    Model.Lead.PhoneAssignment,
+    Service.Interfaces,
+    SolarCalendarPackage,
+    Model.ListOfTheLeads,
+    Model.Customer.Assignment;
+
+Type
+    TPhoneAssignmentService = Class(TInterfacedObject, IPhoneAssignmentService)
+    Public
+        Function GetListAssignments_FollowUp(Var APage: String; Const ABranchID: String;
+          Out ATotalSize: Integer): TObjectList<TListOfTheLeads>;
+        Function GetHeaderAssignments_FollowUp(Const ABranchID: String): TJSONObject;
+        Function GetHeaderAssignments(Const ABranchID: String; Const AStatusCode: String): TJSONObject;
+        Function GetListAssignments(Var APage: String; Const ABranchID: String;
+          Const AStatusCode: String; Out ATotalSize: Integer): TObjectList<TListOfTheLeads>;
+        Function UndoAssignPhonesFromBranches(Const ASourceID: Integer): TJSONObject;
+        Function GetNotAssign(Const ASourceID: Integer): TJSONArray;
+        Function GetBranchAssignments(Const ASourceID: Integer): TJSONArray;
+        Function GetAllAssignments(Var APage: String; Const ABranchID: String;
+          Const ASourceID: String; Out ATotalSize: Integer): TObjectList<TPhoneAssignment>;
+        Function GetAssignmentByID(Const AID: Int64): TCustomer_Assignment;
+        Function CreateAssignment(Const AAssignment: TCustomer_Assignment): TCustomer_Assignment;
+        Function UpdateAssignmentPartial(Const AID: Int64; Const AAssignment: TCustomer_Assignment): TCustomer_Assignment;
+        Function DeleteAssignment(Const AID: Int64): Boolean;
+        Function AssignPhonesToBranches(Const ABranchIdsJson: String;
+            Const ACountsJson: String; Const ASourceID: Integer): TJSONObject;
+    End;
+
+Implementation
+
+Uses
+    Utils,
+    Math,
+    StrUtils,
+    WebModule.SalamtCRM,
+    FireDAC.Comp.Client,
+    FireDac.Stan.Param, Data.DB,
+    MVCFramework.DataSet.Utils;
+
+{ TPhoneAssignmentService }
+
+//________________________________________________________________________________________
+Function TPhoneAssignmentService.GetBranchAssignments(
+  const ASourceID: Integer): TJSONArray;
+Var
+    LFDQuery: TFDQuery;
+    JSONValue: TJSONValue;
+Begin
+    LFDQuery := TFDQuery.Create(nil);
+    Try
+        LFDQuery.Connection := TMVCActiveRecord.CurrentConnection;
+        LFDQuery.SQL.Text :=
+            'CALL sp_lead_branch_assignment(:p_sourceid)';
+
+        LFDQuery.ParamByName('p_sourceid').AsInteger := ASourceID;
+        LFDQuery.Open;
+
+        JSONValue := TJSONObject.ParseJSONValue(LFDQuery.AsJSONArray);
+        If Assigned(JSONValue) AND (JSONValue is TJSONArray) Then
+            Result := TJSONArray(JSONValue)
+        Else
+            Result := TJSONArray.Create;
+    Finally
+        LFDQuery.Free;
+    End;
+End;
+//________________________________________________________________________________________
+Function TPhoneAssignmentService.GetHeaderAssignments(const ABranchID: String; const AStatusCode: String): TJSONObject;
+Var
+    LRQL: string;
+    LBranchID, LStatusID, LCount: Integer;
+Begin
+    Result := TJSONObject.Create;
+
+    LStatusID := StrToIntDef(AStatusCode, 0);
+    LBranchID := StrToIntDef(ABranchID, 0);
+    If (LBranchID <> 0) then
+    Begin
+        LRQL := Format('eq(BranchID,%d)', [LBranchID]);
+
+        If (LStatusID > 0) then
+        Begin
+            LRQL := Format('and(eq(CustomerStatusID,%d),%s)', [LStatusID, LRQL]);
+        End;
+    End
+    Else
+    Begin
+        If (LStatusID > 0) then
+        Begin
+            LRQL := Format('eq(CustomerStatusID,%d)', [LStatusID]);
+        End;
+    End;
+
+
+    // شمارش رکوردها
+    LCount := TMVCActiveRecord.Count<TListOfTheLeads>(LRQL);
+
+    // خروجی
+    Result.AddPair('status_code', TJSONNumber.Create(LStatusID));
+    Result.AddPair('total_phones', TJSONNumber.Create(LCount));
+End;
+//________________________________________________________________________________________
+Function TPhoneAssignmentService.GetListAssignments_FollowUp(Var APage: String; Const ABranchID: String;
+    Out ATotalSize: Integer): TObjectList<TListOfTheLeads>;
+var
+    LCurrPage: Integer;
+    LFirstRec: Integer;
+    LBranchID: Integer;
+    LRQL: string;
+Begin
+    LRQL := '';
+    ATotalSize := 0;
+    LCurrPage := 0;
+    TryStrToInt(APage, LCurrPage);
+    LCurrPage := Max(LCurrPage, 1);
+    LFirstRec := (LCurrPage - 1) * PAGE_SIZE;
+    APage := LCurrPage.ToString;
+
+    LBranchID := StrToIntDef(ABranchID, 0);
+    If (LBranchID <> 0) then
+    Begin
+        LRQL := Format('and(eq(BranchID,%d),or(eq(CustomerStatusID,2),eq(CustomerStatusID,3),eq(CustomerStatusID,4)))', [LBranchID]);
+    End
+    Else
+    Begin
+        LRQL := 'or(eq(CustomerStatusID,2),eq(CustomerStatusID,3),eq(CustomerStatusID,4))';
+    End;
+
+    // تعداد کل برای صفحه‌بندی
+    ATotalSize := TMVCActiveRecord.Count<TListOfTheLeads>(LRQL);
+
+    If (LRQL.IsEmpty) then
+    Begin
+        LRQL := 'sort(+Phone)';
+    End
+    Else
+    Begin
+        LRQL := LRQL + ';sort(+Phone)';
+    End;
+
+    LRQL := LRQL + Format(';limit(%d,%d)', [LFirstRec, PAGE_SIZE]);
+    Result := TMVCActiveRecord.SelectRQL<TListOfTheLeads>(LRQL, PAGE_SIZE);
+End;
+//________________________________________________________________________________________
+Function TPhoneAssignmentService.GetHeaderAssignments_FollowUp(
+  const ABranchID: String): TJSONObject;
+Var
+    LRQLBase, LRQLOlder: string;
+    LBranchID: Integer;
+    LTotal, LOlder: Integer;
+    LThresholdDate: string;
+    LThresholdStr: string;
+    StatusesRQL: string;
+Begin
+    Result := TJSONObject.Create;
+
+    StatusesRQL := 'or(eq(CustomerStatusID,2),eq(CustomerStatusID,3),eq(CustomerStatusID,4))';
+
+    LBranchID := StrToIntDef(ABranchID, 0);
+    If (LBranchID <> 0) then
+    Begin
+        LRQLBase := Format('and(%s,eq(BranchID,%d))', [StatusesRQL, LBranchID]);
+    End
+    Else
+    Begin
+        LRQLBase := StatusesRQL;
+    End;
+    LTotal := TMVCActiveRecord.Count<TListOfTheLeads>(LRQLBase);
+
+
+    LThresholdDate := TDateUtils.GregorianToSolar(IncMonth(Date, -1));
+    // RQL نیاز به دابل‌کوتیشن دارد
+    LThresholdStr  := '"' + LThresholdDate + '"';
+
+    LRQLOlder := Format('and(%s,lt(LastContactDate_Shams,%s))',
+      [LRQLBase, LThresholdStr]);
+
+    LOlder := TMVCActiveRecord.Count<TListOfTheLeads>(LRQLOlder);
+
+    Result.AddPair('status_ids', TJSONString.Create('2,3,4'));
+    Result.AddPair('branch_id', TJSONNumber.Create(LBranchID));
+    Result.AddPair('total_phones', TJSONNumber.Create(LTotal));
+    Result.AddPair('older_than_1_month', TJSONNumber.Create(LOlder));
+End;
+//________________________________________________________________________________________
+Function TPhoneAssignmentService.GetListAssignments(
+  var APage: String;
+  const ABranchID, AStatusCode: String;
+  out ATotalSize: Integer): TObjectList<TListOfTheLeads>;
+Var
+    LCurrPage: Integer;
+    LFirstRec: Integer;
+    LBranchID, LStatusID: Integer;
+    LRQL: string;
+Begin
+    LRQL := '';
+    ATotalSize := 0;
+    LCurrPage := 0;
+    TryStrToInt(APage, LCurrPage);
+    LCurrPage := Max(LCurrPage, 1);
+    LFirstRec := (LCurrPage - 1) * PAGE_SIZE;
+    APage := LCurrPage.ToString;
+
+    LStatusID := StrToIntDef(AStatusCode, 0);
+    LBranchID := StrToIntDef(ABranchID, 0);
+
+    If (LBranchID <> 0) then
+    Begin
+        LRQL := Format('eq(BranchID,%d)', [LBranchID]);
+        If (LStatusID > 0) then
+        Begin
+            LRQL := Format('and(eq(CustomerStatusID,%d),%s)', [LStatusID, LRQL]);
+        End;
+    End
+    Else If (LStatusID > 0) then
+    Begin
+        LRQL := Format('eq(CustomerStatusID,%d)', [LStatusID]);
+    End;
+
+    If (LStatusID = 7) then
+    Begin
+        LRQL := Format('and(eq(CustomerStatusID,%d),%s)', [LStatusID, LRQL]);
+    End;
+
+    ATotalSize := TMVCActiveRecord.Count<TListOfTheLeads>(LRQL);
+
+    If (LRQL.IsEmpty) then
+    Begin
+        LRQL := 'sort(+Phone)';
+    End
+    Else
+    Begin
+        LRQL := LRQL + ';sort(+Phone)';
+    End;
+
+    LRQL := LRQL + Format(';limit(%d,%d)', [LFirstRec, PAGE_SIZE]);
+    Result := TMVCActiveRecord.SelectRQL<TListOfTheLeads>(LRQL, PAGE_SIZE);
+End;
+//________________________________________________________________________________________
+Function TPhoneAssignmentService.GetNotAssign(Const ASourceID: Integer): TJSONArray;
+Var
+    LFDQuery: TFDQuery;
+    JSONValue: TJSONValue;
+Begin
+    LFDQuery := TFDQuery.Create(nil);
+    Try
+        LFDQuery.Connection := TMVCActiveRecord.CurrentConnection;
+        LFDQuery.SQL.Text :=
+            'CALL sp_lead_not_assignment(:p_sourceid)';
+
+        LFDQuery.ParamByName('p_sourceid').AsInteger := ASourceID;
+
+        LFDQuery.Open;
+
+        JSONValue := TJSONObject.ParseJSONValue(LFDQuery.AsJSONArray);
+        If Assigned(JSONValue) AND (JSONValue is TJSONArray) Then
+            Result := TJSONArray(JSONValue)
+        Else
+            Result := TJSONArray.Create;
+    Finally
+        LFDQuery.Free;
+    End;
+End;
+//________________________________________________________________________________________
+Function TPhoneAssignmentService.GetAllAssignments(Var APage: String;
+  Const ABranchID: String; Const ASourceID: String;
+  Out ATotalSize: Integer): TObjectList<TPhoneAssignment>;
+VAR
+    LCurrPage: Integer;
+    LFirstRec: Integer;
+    LRQL: String;
+Begin
+    LRQL := EmptyStr;
+    ATotalSize := 0;
+    LCurrPage := 0;
+    TryStrToInt(APage, LCurrPage);
+
+    LCurrPage := Max(LCurrPage, 1);
+    LFirstRec := (LCurrPage - 1) * PAGE_SIZE;
+    APage := LCurrPage.ToString;
+
+    If (NOT ABranchID.IsEmpty) AND (ABranchID <> '0') Then
+    Begin
+        LRQL := Format('eq(BranchID,%s)', [ABranchID]);
+    End;
+
+    If (NOT ASourceID.IsEmpty) AND (ASourceID <> '0') Then
+    Begin
+        If (LRQL.IsEmpty) then
+        Begin
+            LRQL := Format('eq(SourceCollectingDataID,%s)', [ASourceID]);
+        End
+        Else
+        Begin
+            LRQL := Format('and(%s,eq(SourceCollectingDataID,%s))', [LRQL, ASourceID]);
+        End;
+    End;
+
+    LRQL := IfThen(LRQL.IsEmpty, EmptyStr, LRQL+';') +
+      Format('sort(+Phone);limit(%d,%d)', [LFirstRec, PAGE_SIZE]);
+
+    ATotalSize := TMVCActiveRecord.Count<TPhoneAssignment>(LRQL);
+    RESULT := TMVCActiveRecord.SelectRQL<TPhoneAssignment>(LRQL, PAGE_SIZE);
+End;
+//________________________________________________________________________________________
+Function TPhoneAssignmentService.GetAssignmentByID(Const AID: Int64): TCustomer_Assignment;
+Begin
+    Result := TMVCActiveRecord.GetByPK<TCustomer_Assignment>(AID, False);
+End;
+//________________________________________________________________________________________
+Function TPhoneAssignmentService.AssignPhonesToBranches(Const ABranchIdsJson: String;
+    Const ACountsJson: String; Const ASourceID: Integer): TJSONObject;
+Var
+    LQuery: TFDQuery;
+    LReportArray: TJSONArray;
+    LRowObj: TJSONObject;
+    LTotalObj: TJSONObject;
+    LSQL: String;
+Begin
+    LQuery := TFDQuery.Create(Nil);
+    Try
+        LQuery.Connection := TMVCActiveRecord.CurrentConnection;
+
+        LSQL := 'CALL sp_assign_phones_to_branches(:p_branch_ids, :p_counts, :p_sourceid)';
+
+        LQuery.SQL.Text := LSQL;
+        LQuery.Params.ParamByName('p_branch_ids').AsString := ABranchIdsJson;
+        LQuery.Params.ParamByName('p_counts').AsString := ACountsJson;
+        LQuery.Params.ParamByName('p_sourceid').AsInteger := ASourceID;
+
+
+        LQuery.Open;
+
+        LReportArray := TJSONArray.Create;
+        Try
+            While Not LQuery.Eof Do
+            Begin
+                LRowObj := TJSONObject.Create;
+                LRowObj.AddPair('BranchID', TJSONNumber.Create(LQuery.FieldByName('BranchID').AsInteger));
+                LRowObj.AddPair('Requested', TJSONNumber.Create(LQuery.FieldByName('Requested').AsInteger));
+                LRowObj.AddPair('Assigned', TJSONNumber.Create(LQuery.FieldByName('Assigned').AsInteger));
+                LReportArray.Add(LRowObj);
+                LQuery.Next;
+            End;
+
+
+            If LQuery.FindNext Then
+            Begin
+                LQuery.NextRecordSet;
+                If Not LQuery.IsEmpty Then
+                Begin
+                    LTotalObj := TJSONObject.Create;
+                    Try
+                        LTotalObj.AddPair('TotalAssigned', TJSONNumber.Create(LQuery.Fields[0].AsInteger));
+                    Except
+                        LTotalObj.Free;
+                        Raise;
+                    End;
+                End
+                Else
+                Begin
+                    LTotalObj := TJSONObject.Create;
+                    LTotalObj.AddPair('TotalAssigned', TJSONNumber.Create(0));
+                End;
+            End
+            Else
+            Begin
+                // اگر ResultSet بعدی نبود
+                LTotalObj := TJSONObject.Create;
+                LTotalObj.AddPair('TotalAssigned', TJSONNumber.Create(0));
+            End;
+
+            // ساختن JSON خروجی کلی
+            Result := TJSONObject.Create;
+            Result.AddPair('report', LReportArray);
+            Result.AddPair('summary', LTotalObj);
+
+        Except
+            On E: Exception do
+            Begin
+                LReportArray.Free;
+                Raise;
+            End;
+        End;
+
+    Finally
+        // بسته شدن و آزادسازی کانکشن/کوئری — توجه کن اگر از shared connection استفاده می‌کنی
+        If Assigned(LQuery) Then
+        Begin
+            Try
+                If LQuery.Active Then
+                    LQuery.Close;
+            Except
+            End;
+            LQuery.Free;
+        End;
+    End;
+End;
+//________________________________________________________________________________________
+Function TPhoneAssignmentService.CreateAssignment(Const AAssignment: TCustomer_Assignment): TCustomer_Assignment;
+Var
+	  LCopy: TCustomer_Assignment;
+Begin
+    LCopy := TCustomer_Assignment.Create;
+    Try
+        LCopy.Phone := AAssignment.Phone;
+        LCopy.BranchID := AAssignment.BranchID;
+        LCopy.SourceCollectingDataID := AAssignment.SourceCollectingDataID;
+        LCopy.UserName := AAssignment.UserName;
+
+        LCopy.Insert;
+        Result := GetAssignmentByID(LCopy.AssignmentID);
+    Except
+        LCopy.Free;
+        Raise;
+    End;
+End;
+//________________________________________________________________________________________
+Function TPhoneAssignmentService.UndoAssignPhonesFromBranches(
+  Const ASourceID: Integer): TJSONObject;
+Var
+    LQuery: TFDQuery;
+    LReportArray: TJSONArray;
+    LRowObj: TJSONObject;
+    LHasResult: Boolean;
+Begin
+    Result := TJSONObject.Create;
+
+    LQuery := TFDQuery.Create(Nil);
+    Try
+        LQuery.Connection := TMVCActiveRecord.CurrentConnection;
+        LQuery.SQL.Text := 'CALL sp_undo_assign_phones_from_branches(:p_sourceid)';
+        LQuery.Params.ParamByName('p_sourceid').AsInteger := ASourceID;
+        LQuery.Open;
+
+        LReportArray := TJSONArray.Create;
+        Try
+            LHasResult := False;
+            While Not LQuery.Eof Do
+            Begin
+                LHasResult := True;
+                LRowObj := TJSONObject.Create;
+                LRowObj.AddPair('BranchID', TJSONNumber.Create(LQuery.FieldByName('BranchID').AsInteger));
+                LRowObj.AddPair('Requested', TJSONNumber.Create(LQuery.FieldByName('Requested').AsInteger));
+                LRowObj.AddPair('Assigned', TJSONNumber.Create(LQuery.FieldByName('Assigned').AsInteger));
+                LReportArray.Add(LRowObj);
+                LQuery.Next;
+            End;
+
+            If LHasResult Then
+            Begin
+                Result.AddPair('has_changes', TJSONBool.Create(True));
+                Result.AddPair('report', LReportArray);
+            End
+            Else
+            Begin
+                Result.AddPair('has_changes', TJSONBool.Create(False));
+                If ASourceID = 0 then
+                Begin
+                    Result.AddPair('message', 'هیچ شماره ای در یک ساعت گذشته اختصاص داده نشده است!');
+                End
+                Else
+                Begin
+                    Result.AddPair('message', 'هیچ ردیفی در یک ساعت گذشته برای این منبع تغییر نکرده است.');
+                End;
+                LReportArray.Free;
+            End;
+
+        Except
+            On E: Exception do
+            Begin
+                LReportArray.Free;
+                Raise;
+            End;
+        End;
+
+    Finally
+        If Assigned(LQuery) Then
+        Begin
+            Try
+                If LQuery.Active Then
+                    LQuery.Close;
+            Except
+            End;
+            LQuery.Free;
+        End;
+    End;
+End;
+//________________________________________________________________________________________
+Function TPhoneAssignmentService.UpdateAssignmentPartial(Const AID: Int64; Const AAssignment: TCustomer_Assignment): TCustomer_Assignment;
+Var
+	  LExisting: TCustomer_Assignment;
+Begin
+    LExisting := TMVCActiveRecord.GetByPK<TCustomer_Assignment>(AID, False);
+    If Not Assigned(LExisting) Then
+    Begin
+        Exit(nil);
+    End;
+
+    Try
+        If (Not AAssignment.Phone.IsEmpty) Then
+        Begin
+            LExisting.Phone := AAssignment.Phone;
+        End;
+
+        If (AAssignment.BranchID <> 0) Then
+        Begin
+            LExisting.BranchID := AAssignment.BranchID;
+        End;
+
+        If (AAssignment.SourceCollectingDataID <> 0) Then
+        Begin
+            LExisting.SourceCollectingDataID := AAssignment.SourceCollectingDataID;
+        End;
+
+        If (AAssignment.UserName.HasValue) Then
+        Begin
+            LExisting.UserName := AAssignment.UserName;
+        End;
+
+        LExisting.Update;
+        Result := LExisting;
+    Except
+        LExisting.Free;
+        Raise;
+    End;
+End;
+//________________________________________________________________________________________
+Function TPhoneAssignmentService.DeleteAssignment(Const AID: Int64): Boolean;
+Var
+	  LExisting: TCustomer_Assignment;
+Begin
+    LExisting := TMVCActiveRecord.GetByPK<TCustomer_Assignment>(AID, False);
+    If Not Assigned(LExisting) Then
+    Begin
+        Exit(False);
+    End;
+
+    Try
+        LExisting.Delete;
+        Result := True;
+    Finally
+        LExisting.Free;
+    End;
+End;
+//________________________________________________________________________________________
+
+End.
+
