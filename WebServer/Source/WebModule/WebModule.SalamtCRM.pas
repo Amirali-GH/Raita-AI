@@ -169,8 +169,8 @@ Begin
 
 
     fMVC.AddMiddleware(TMVCStaticFilesMiddleware.Create(
-        '/assets/icons/favicon.ico',
-        TPath.Combine(WWWPath_fa, 'assets', 'favicon.ico'),
+        '/favicon.ico',
+        '.\',
         'favicon.ico',
         False,
         'UTF-8',

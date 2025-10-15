@@ -1,0 +1,562 @@
+/* marketing.css - Specific styles for marketing.html */
+
+/* Marketing Container */
+.marketing-container {
+	width: 100%;
+	padding: var(--space-xl);
+	background: var(--bg);
+	min-height: 100vh;
+}
+
+/* Marketing Header */
+.marketing-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: var(--space-xl);
+}
+
+.marketing-header__top .muted {
+	margin: 0;
+}
+
+/* Marketing Export Buttons */
+.marketing-export-buttons {
+	display: flex;
+	gap: var(--space-sm);
+}
+
+/* Marketing Content Wrapper */
+.marketing-content-wrapper {
+	display: grid;
+	grid-template-columns: 1fr 450px;
+	gap: var(--space-xl);
+}
+
+/* Marketing Main Content */
+.marketing-main-content {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-xl);
+}
+
+/* Marketing Target Section */
+.marketing-target-section {
+	background: var(--card);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-lg);
+	padding: var(--space-lg);
+}
+
+/* Marketing Label */
+.marketing-label {
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--text);
+	margin-bottom: var(--space-sm);
+	display: block;
+}
+
+/* Marketing Select Wrapper */
+.marketing-select-wrapper {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+}
+
+/* Marketing Select */
+.marketing-select {
+	flex: 1;
+	padding: 12px 16px;
+	background: var(--card);
+	border: 1px solid var(--border-light);
+	border-radius: var(--radius-md);
+	font-family: var(--font-primary);
+	font-size: 14px;
+	color: var(--text);
+	cursor: pointer;
+	appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 16px center;
+	padding-right: 40px;
+}
+
+.marketing-select:focus {
+	outline: none;
+	border-color: var(--accent);
+}
+
+/* Button Search Icon */
+.btn-search-icon {
+	width: 44px;
+	height: 44px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--card);
+	border: 1px solid var(--border-light);
+	border-radius: var(--radius-md);
+	cursor: pointer;
+	transition: var(--transition-base);
+}
+
+.btn-search-icon:hover {
+	background: var(--surface);
+	border-color: var(--accent);
+}
+
+/* Marketing Section */
+.marketing-section {
+	background: var(--card);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-lg);
+	padding: var(--space-xl);
+}
+
+/* Marketing Section Title */
+.marketing-section-title {
+	font-size: 18px;
+	font-weight: 600;
+	color: var(--text);
+	margin-bottom: var(--space-lg);
+}
+
+/* Platform Card */
+.platform-card {
+	display: flex;
+	align-items: center;
+	gap: var(--space-lg);
+	padding: var(--space-lg);
+	background: var(--card);
+	border: 1px solid var(--border-light);
+	border-radius: var(--radius-lg);
+	margin-bottom: var(--space-md);
+	transition: var(--transition-base);
+}
+
+.platform-card:hover {
+	background: var(--surface);
+	transform: translateY(-2px);
+	box-shadow: var(--shadow-soft);
+}
+
+.platform-card:last-child {
+	margin-bottom: 0;
+}
+
+/* Platform Card Icon */
+.platform-card__icon {
+	flex-shrink: 0;
+}
+
+/* Platform Logo */
+.platform-logo {
+	width: 56px;
+	height: 56px;
+	border-radius: var(--radius-md);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 700;
+	font-size: 24px;
+	color: white;
+}
+
+.platform-logo--amazon {
+	background: #232F3E;
+}
+
+.platform-logo--noon {
+	background: #FFD700;
+	color: #000;
+}
+
+.platform-logo--namshi {
+	background: #E91E63;
+}
+
+/* Platform Card Content */
+.platform-card__content {
+	flex: 1;
+}
+
+/* Platform Card Title */
+.platform-card__title {
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--text);
+	margin: 0 0 4px 0;
+}
+
+/* Platform Card Share */
+.platform-card__share {
+	font-size: 13px;
+	color: var(--muted);
+	margin: 0 0 8px 0;
+}
+
+/* Platform Card Description */
+.platform-card__description {
+	font-size: 14px;
+	color: var(--muted);
+	margin: 0;
+	line-height: 1.5;
+}
+
+/* Button View Guide */
+.btn--view-guide {
+	padding: 10px 20px;
+	background: var(--accent);
+	border: none;
+	border-radius: var(--radius-md);
+	color: white;
+	font-family: var(--font-primary);
+	font-weight: 600;
+	font-size: 14px;
+	cursor: pointer;
+	transition: var(--transition-base);
+	white-space: nowrap;
+}
+
+.btn--view-guide:hover {
+	background: #6d28d9;
+	transform: translateY(-1px);
+}
+
+/* Marketing Channel Card */
+.marketing-channel-card {
+	padding: var(--space-lg);
+	background: var(--surface);
+	border-radius: var(--radius-md);
+	margin-bottom: var(--space-md);
+}
+
+.marketing-channel-card:last-child {
+	margin-bottom: 0;
+}
+
+/* Marketing Channel Header */
+.marketing-channel-header {
+	margin-bottom: var(--space-sm);
+}
+
+/* Marketing Channel Title */
+.marketing-channel-title {
+	font-size: 15px;
+	font-weight: 600;
+	color: var(--text);
+	margin: 0;
+}
+
+/* Marketing Channel Description */
+.marketing-channel-description {
+	font-size: 14px;
+	color: var(--muted);
+	line-height: 1.6;
+	margin: 0;
+}
+
+/* AI Content Studio */
+.ai-content-studio {
+	background: var(--card);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-lg);
+	padding: var(--space-lg);
+	height: fit-content;
+	top: 100px;
+}
+
+/* AI Studio Header */
+.ai-studio-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-bottom: var(--space-md);
+	border-bottom: 1px solid var(--border-light);
+	margin-bottom: var(--space-lg);
+}
+
+/* AI Studio Brand */
+.ai-studio-brand {
+	display: flex;
+	align-items: center;
+	gap: var(--space-sm);
+}
+
+/* AI Studio Logo */
+.ai-studio-logo {
+	width: 32px;
+	height: 32px;
+	border-radius: 6px;
+}
+
+/* AI Studio Brand H3 */
+.ai-studio-brand h3 {
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--text);
+	margin: 0;
+}
+
+/* Button Close Studio */
+.btn-close-studio {
+	width: 32px;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	border-radius: var(--radius-md);
+	transition: var(--transition-base);
+}
+
+.btn-close-studio:hover {
+	background: var(--surface);
+}
+
+/* AI Studio Content */
+.ai-studio-content {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-lg);
+}
+
+/* AI Studio Subtitle */
+.ai-studio-subtitle {
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--text);
+	margin: 0;
+}
+
+/* Instagram Post Preview */
+.instagram-post-preview {
+	border: 1px solid var(--border-light);
+	border-radius: var(--radius-lg);
+	overflow: hidden;
+	background: white;
+}
+
+/* Instagram Post Header */
+.instagram-post-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px;
+}
+
+/* Instagram Profile */
+.instagram-profile {
+	display: flex;
+	align-items: center;
+	gap: var(--space-sm);
+}
+
+/* Instagram Avatar */
+.instagram-avatar {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+/* Instagram Info */
+.instagram-info {
+	display: flex;
+	flex-direction: column;
+}
+
+/* Instagram Username */
+.instagram-username {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--text);
+}
+
+/* Instagram Sponsored */
+.instagram-sponsored {
+	font-size: 11px;
+	color: var(--muted);
+}
+
+/* Instagram Menu */
+.instagram-menu {
+	background: none;
+	border: none;
+	font-size: 20px;
+	cursor: pointer;
+	padding: 4px;
+}
+
+/* Instagram Post Image */
+.instagram-post-image {
+	width: 100%;
+	aspect-ratio: 1/1;
+	background: var(--surface);
+}
+
+.instagram-post-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/* Instagram Post Actions */
+.instagram-post-actions {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px 12px;
+}
+
+/* Instagram Action Icons */
+.instagram-action-icons {
+	display: flex;
+	gap: 12px;
+}
+
+/* Instagram Action, Bookmark */
+.instagram-action,
+.instagram-bookmark {
+	background: none;
+	border: none;
+	font-size: 20px;
+	cursor: pointer;
+	padding: 4px;
+}
+
+/* Instagram Post Caption */
+.instagram-post-caption {
+	padding: 0 12px 12px;
+}
+
+.instagram-post-caption h4 {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--text);
+	margin: 0 0 8px 0;
+}
+
+.instagram-post-caption p {
+	font-size: 13px;
+	color: var(--text);
+	line-height: 1.5;
+	margin: 0;
+}
+
+/* AI Studio Input Wrapper */
+.ai-studio-input-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-sm);
+}
+
+/* AI Studio Input */
+.ai-studio-input {
+	width: 100%;
+	padding: 12px 0px 12px 0px;
+	background: var(--surface);
+	border: 1px solid var(--border-light);
+	border-radius: var(--radius-md);
+	font-family: var(--font-primary);
+	font-size: 14px;
+	color: var(--text);
+}
+
+.ai-studio-input:focus {
+	outline: none;
+	border-color: var(--accent);
+}
+
+.ai-studio-input::placeholder {
+	color: var(--muted);
+}
+
+/* AI Studio Input Actions */
+.ai-studio-input-actions {
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+}
+
+/* Button Input Action */
+.btn-input-action {
+	padding: 8px 12px;
+	background: var(--surface);
+	border: 1px solid var(--border-light);
+	border-radius: var(--radius-md);
+	font-size: 13px;
+	color: var(--text);
+	cursor: pointer;
+	transition: var(--transition-base);
+}
+
+.btn-input-action:hover {
+	background: var(--card);
+	border-color: var(--accent);
+}
+
+/* Button Generate AI */
+.btn-generate-ai {
+	padding: 10px 20px;
+	background: linear-gradient(135deg, var(--accent) 0%, #6d28d9 100%);
+	border: none;
+	border-radius: var(--radius-md);
+	color: white;
+	font-family: var(--font-primary);
+	font-weight: 600;
+	font-size: 14px;
+	cursor: pointer;
+	transition: var(--transition-base);
+	margin-left: auto;
+}
+
+.btn-generate-ai:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
+}
+
+/* Media Queries Specific to Marketing */
+@media (max-width: 1200px) {
+	.marketing-content-wrapper {
+		grid-template-columns: 1fr;
+	}
+
+	.ai-content-studio {
+		position: static;
+	}
+}
+
+@media (max-width: 768px) {
+	.marketing-container {
+		padding: var(--space-md);
+	}
+
+	.marketing-header {
+		flex-direction: column;
+		gap: var(--space-md);
+	}
+
+	.marketing-export-buttons {
+		width: 100%;
+		justify-content: flex-end;
+	}
+
+	.platform-card {
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.btn--view-guide {
+		width: 100%;
+	}
+}

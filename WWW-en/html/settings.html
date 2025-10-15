@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Setting</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="../css/style.css" />
+</head>
+
+<body>
+	<div class="page-content">
+		<div class="settings-container">
+			<!-- Settings Sidebar -->
+			<aside class="settings-sidebar">
+				<nav class="settings-nav">
+					<button class="settings-nav-item settings-nav-item--active" data-section="profile">
+						Profile
+					</button>
+					<button class="settings-nav-item" data-section="preferences">
+						Preferences
+					</button>
+					<button class="settings-nav-item" data-section="payment">
+						Payment Methods
+					</button>
+					<button class="settings-nav-item" data-section="security">
+						Security
+					</button>
+					<button class="settings-nav-item settings-nav-item--logout" data-section="logout">
+						Logout
+					</button>
+				</nav>
+			</aside>
+
+			<!-- Settings Content -->
+			<main class="settings-content">
+				<!-- Profile Section -->
+				<section class="settings-section settings-section--active" id="profile-section">
+					<h2 class="settings-section-title">Profile Information</h2>
+
+					<!-- Profile Picture -->
+					<div class="profile-picture-section">
+						<div class="profile-picture-wrapper">
+							<img src="assets/images/profile.jpg" alt="Profile Picture" class="profile-picture"
+								id="profile-pic" />
+						</div>
+						<div class="profile-picture-actions">
+							<button class="btn--secondary" id="btn-remove-pic">Remove</button>
+							<button class="btn--primary" id="btn-upload-pic">Upload</button>
+							<input type="file" id="file-upload" accept="image/*" style="display: none;" />
+						</div>
+					</div>
+
+					<!-- Profile Form -->
+					<form class="settings-form" id="profile-form">
+						<div class="form-row">
+							<div class="form-group">
+								<label class="form-label" for="full-name">Full Name</label>
+								<input type="text" id="full-name" class="form-input" value="AmirAli Ghadiri" />
+							</div>
+							<div class="form-group">
+								<label class="form-label" for="email">Email Address</label>
+								<input type="email" id="email" class="form-input" value="amiralighadiri1383@gmail.com" />
+							</div>
+						</div>
+
+						<div class="form-row">
+							<div class="form-group">
+								<label class="form-label" for="phone">Phone Number</label>
+								<input type="tel" id="phone" class="form-input" value="(+98) 913-375-4366" />
+							</div>
+							<div class="form-group">
+								<label class="form-label" for="company">Company Name</label>
+								<input type="text" id="company" class="form-input" placeholder="Optional" />
+							</div>
+						</div>
+
+						<button type="submit" class="btn--save">Save Changes</button>
+					</form>
+				</section>
+
+				<!-- Preferences Section -->
+				<section class="settings-section" id="preferences-section">
+					<h2 class="settings-section-title">Preferences</h2>
+
+					<form class="settings-form" id="preferences-form">
+						<div class="form-row">
+							<div class="form-group">
+								<label class="form-label" for="language">Language</label>
+								<select id="language" class="form-select">
+									<option value="en">English</option>
+									<option value="ar">العربية</option>
+									<option value="fa">فارسی</option>
+									<option value="tr">Türkçe</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label class="form-label" for="timezone">Time Zone</label>
+								<select id="timezone" class="form-select">
+									<option value="utc">UTC</option>
+									<option value="dubai">Dubai (UTC+4)</option>
+									<option value="tehran">Tehran (UTC+3:30)</option>
+									<option value="istanbul">Istanbul (UTC+3)</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-row">
+							<div class="form-group">
+								<label class="form-label" for="currency">Currency</label>
+								<select id="currency" class="form-select">
+									<option value="usd">USD ($)</option>
+									<option value="aed">AED (د.إ)</option>
+									<option value="eur">EUR (€)</option>
+									<option value="gbp">GBP (£)</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label class="form-label" for="date-format">Date Format</label>
+								<select id="date-format" class="form-select">
+									<option value="mdy">MM/DD/YYYY</option>
+									<option value="dmy">DD/MM/YYYY</option>
+									<option value="ymd">YYYY-MM-DD</option>
+								</select>
+							</div>
+						</div>
+
+						<!-- Email Notifications -->
+						<div class="form-group" style="margin-top: 2rem;">
+							<label class="form-label">Email Notifications</label>
+
+							<div class="form-checkbox-wrapper">
+								<input type="checkbox" id="notify-orders" class="form-checkbox" checked />
+								<label class="checkbox-label" for="notify-orders">New orders and updates</label>
+							</div>
+
+							<div class="form-checkbox-wrapper">
+								<input type="checkbox" id="notify-marketing" class="form-checkbox" checked />
+								<label class="checkbox-label" for="notify-marketing">Marketing insights and tips</label>
+							</div>
+
+							<div class="form-checkbox-wrapper">
+								<input type="checkbox" id="notify-reports" class="form-checkbox" />
+								<label class="checkbox-label" for="notify-reports">Weekly reports</label>
+							</div>
+						</div>
+
+						<button type="submit" class="btn--save">Save Preferences</button>
+					</form>
+				</section>
+
+				<!-- Payment Methods Section -->
+				<section class="settings-section" id="payment-section">
+					<h2 class="settings-section-title">Payment Methods</h2>
+
+					<div class="payment-cards-list">
+						<!-- Card 1 -->
+						<div class="payment-card">
+							<div class="payment-card-icon">
+								<svg width="48" height="32" viewBox="0 0 48 32" fill="none">
+									<rect width="48" height="32" rx="4" fill="#1A1F71" />
+									<circle cx="18" cy="16" r="8" fill="#EB001B" />
+									<circle cx="30" cy="16" r="8" fill="#F79E1B" />
+								</svg>
+							</div>
+							<div class="payment-card-info">
+								<h4 class="payment-card-title">Mastercard ending in 4242</h4>
+								<p class="payment-card-subtitle">Expires 12/2025</p>
+							</div>
+							<div class="payment-card-actions">
+								<button class="btn--text">Edit</button>
+								<button class="btn--text btn--danger">Remove</button>
+							</div>
+						</div>
+
+						<!-- Card 2 -->
+						<div class="payment-card">
+							<div class="payment-card-icon">
+								<svg width="48" height="32" viewBox="0 0 48 32" fill="none">
+									<rect width="48" height="32" rx="4" fill="#0066B2" />
+									<path d="M20 10H18L16 22H18L20 10Z" fill="white" />
+									<path d="M30 10L28 22H30L32 10H30Z" fill="white" />
+								</svg>
+							</div>
+							<div class="payment-card-info">
+								<h4 class="payment-card-title">Visa ending in 8888</h4>
+								<p class="payment-card-subtitle">Expires 08/2024</p>
+							</div>
+							<div class="payment-card-actions">
+								<button class="btn--text">Edit</button>
+								<button class="btn--text btn--danger">Remove</button>
+							</div>
+						</div>
+					</div>
+
+					<button class="btn--add-card" id="btn-add-card">
+						<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+							<path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+						</svg>
+						Add New Payment Method
+					</button>
+				</section>
+
+				<!-- Security Section -->
+				<section class="settings-section" id="security-section">
+					<h2 class="settings-section-title">Security</h2>
+
+					<form class="settings-form" id="security-form">
+						<div class="security-section-subtitle">Change Password</div>
+						<p class="security-description">
+							Update your password regularly to keep your account secure. We recommend using a strong
+							password with at least 8 characters.
+						</p>
+
+						<div class="form-group">
+							<label class="form-label" for="current-password">Current Password</label>
+							<input type="password" id="current-password" class="form-input"
+								placeholder="Enter current password" />
+						</div>
+
+						<div class="form-row">
+							<div class="form-group">
+								<label class="form-label" for="new-password">New Password</label>
+								<input type="password" id="new-password" class="form-input"
+									placeholder="Enter new password" />
+							</div>
+							<div class="form-group">
+								<label class="form-label" for="confirm-password">Confirm New Password</label>
+								<input type="password" id="confirm-password" class="form-input"
+									placeholder="Confirm new password" />
+							</div>
+						</div>
+
+						<button type="submit" class="btn--save">Update Password</button>
+
+						<div class="security-section-divider"></div>
+
+						<!-- Two-Factor Authentication -->
+						<div class="security-section-subtitle">Two-Factor Authentication</div>
+						<p class="security-description">
+							Add an extra layer of security to your account by enabling two-factor authentication.
+						</p>
+
+						<div class="form-checkbox-wrapper">
+							<input type="checkbox" id="enable-2fa" class="form-checkbox" />
+							<label class="checkbox-label" for="enable-2fa">Enable Two-Factor Authentication
+								(2FA)</label>
+						</div>
+
+						<button type="button" class="btn--save" style="margin-top: 1.5rem;" id="btn-setup-2fa">
+							Setup 2FA
+						</button>
+					</form>
+				</section>
+			</main>
+		</div>
+	</div>
+	<script src="../js/settings.js"></script>
+</body>
+
+</html>

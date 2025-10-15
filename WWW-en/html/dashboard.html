@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Dashboard</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="../css/style.css" />
+	<link rel="manifest" href="manifest.json" />
+</head>
+
+<body>
+	<div class="page-content">
+		<div class="dashbord-first-row">
+			<!-- Market AI Section - 70% سمت چپ -->
+			<section class="market-ai" aria-label="Market AI Assistant">
+				<div class="market-ai__header">
+					<img src="assets/icons/favicon2.png" alt="Raita AI" class="market-ai__logo" />
+				</div>
+
+				<div class="market-ai__input-group">
+					<input type="text" class="market-ai__input"
+						placeholder='e.g., "Find trending electronics in the UAE..."'
+						aria-label="Ask Raita AI for market insights" />
+					<div class="market-ai__input-group_buttons">
+						<div class="market-ai__input-group_buttons">
+							<p style="color: rgb(92, 92, 92);">Instagram Post</p>
+
+							<svg style="margin-left: 5px" width="6" height="11" viewBox="0 0 6 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M3.76816 5.49999L0.0556641 1.78749L1.11616 0.72699L5.88916 5.49999L1.11616 10.273L0.0556641 9.21249L3.76816 5.49999Z" fill="#525866"/>
+							</svg>
+
+							<svg style="margin: 0px 10px" width="2" height="21" viewBox="0 0 2 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<line x1="1.38965" y1="0.5" x2="1.38965" y2="20.5" stroke="#E1E4EA"/>
+							</svg>
+
+							<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M8.50946 9.40915L8.6819 9.23674C10.3308 7.58775 13.0043 7.58775 14.6532 9.23674C16.3022 10.8857 16.3022 13.5592 14.6532 15.2081L12.2647 17.5966C10.6158 19.2456 7.9423 19.2456 6.29335 17.5966C4.64441 15.9477 4.64441 13.2742 6.29335 11.6252L6.68031 11.2383" stroke="#99A0AE" stroke-width="1.25" stroke-linecap="round"/>
+								<path d="M15.0993 9.76199L15.4862 9.37507C17.1352 7.72612 17.1352 5.05265 15.4862 3.4037C13.8373 1.75476 11.1638 1.75476 9.5149 3.4037L7.12635 5.79225C5.47741 7.44119 5.47741 10.1147 7.12635 11.7636C8.7753 13.4126 11.4488 13.4126 13.0977 11.7636L13.2701 11.5912" stroke="#99A0AE" stroke-width="1.25" stroke-linecap="round"/>
+							</svg>
+						</div>
+						<button class="btn btn--ask" aria-label="Ask Raita AI">Ask</button>
+					</div>
+				</div>
+
+				<div class="market-ai__chips">
+					<button class="chip" data-prompt="Find trending products in the Middle East.">
+						Find trending products in the Middle East.
+					</button>
+					<button class="chip" data-prompt="Analyze the market for electric bikes in Europe.">
+						Analyze the market for electric bikes in Europe.
+					</button>
+				</div>
+
+				<div class="market-ai__results" aria-live="polite"></div>
+			</section>
+
+			<section class="stats-grid" aria-label="Business statistics">
+				<!-- کارت اول - بالا -->
+				<div class="stat-card stat-card--revenue">
+					<div class="stat-card-content">
+						<div class="stat-card__title">
+							<h3>Total Revenue</h3>
+							<svg class="icon-stat-card-flash" width="24" height="24" viewBox="0 0 24 24" fill="none"
+								xmlns="http://www.w3.org/2000/svg">
+								<path d="M7 17L17 7" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
+								<path d="M7 7H17V17" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
+							</svg>
+						</div>
+
+						<div class="stat-card-detail">
+							<p class="stat-card__value" data-value="81000">$81,000</p>
+							<div class="stat-card__trend trend--up">
+								<div class="trend-section">
+									<svg class="trend__icon" width="20" height="21" viewBox="0 0 20 21" fill="none"
+										xmlns="http://www.w3.org/2000/svg">
+										<path d="M3.55291 15.9191L6.38134 11.0201L11.2803 13.8485L15.523 6.50004"
+											fill="#5FFF66" />
+										<path d="M3.55291 15.9191L6.38134 11.0201L11.2803 13.8485L15.523 6.50004"
+											stroke="#09DE13" stroke-width="1.4" stroke-miterlimit="5.759"
+											stroke-linecap="round" stroke-linejoin="round" />
+										<path d="M12.625 7.27649L15.5228 6.50003L16.2992 9.39781" stroke="#09DE13"
+											stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+									</svg>
+
+									<span class="trend__value">10.0%</span>
+								</div>
+								<span class="trend__text">From last week</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- کارت دوم - پایین -->
+				<div class="stat-card">
+					<div class="stat-card__content">
+						<div class="stat-card__title">
+							<h3>Total Orders</h3>
+							<svg class="icon-stat-card-flash" width="24" height="24" viewBox="0 0 24 24" fill="none"
+								xmlns="http://www.w3.org/2000/svg">
+								<path d="M7 17L17 7" stroke="var(--accent-2)" stroke-linecap="round"
+									stroke-linejoin="round" />
+								<path d="M7 7H17V17" stroke="var(--accent-2)" stroke-linecap="round"
+									stroke-linejoin="round" />
+							</svg>
+						</div>
+
+						<div class="stat-card-detail">
+							<p class="stat-card__value" data-value="5000">$5,000</p>
+							<div class="stat-card__trend trend--up">
+								<div class="trend-section">
+									<svg class="trend__icon" width="20" height="21" viewBox="0 0 20 21" fill="none"
+										xmlns="http://www.w3.org/2000/svg">
+										<path d="M3.55291 15.9191L6.38134 11.0201L11.2803 13.8485L15.523 6.50004"
+											fill="#5FFF66" />
+										<path d="M3.55291 15.9191L6.38134 11.0201L11.2803 13.8485L15.523 6.50004"
+											stroke="#09DE13" stroke-width="1.4" stroke-miterlimit="5.759"
+											stroke-linecap="round" stroke-linejoin="round" />
+										<path d="M12.625 7.27649L15.5228 6.50003L16.2992 9.39781" stroke="#09DE13"
+											stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+									</svg>
+
+									<span class="trend__value">1.5%</span>
+								</div>
+								<span class="trend__text">From last week</span>
+							</div>
+						</div>
+
+
+					</div>
+				</div>
+			</section>
+		</div>
+
+		<!-- Trending Products -->
+		<div class="dashbord-second-row">
+			<article class="trending-products" aria-label="Today's trending products">
+				<header class="section-header">
+					<h3>Today's Trending Products</h3>
+				</header>
+
+				<div class="products-grid">
+					<div class="product-card">
+						<img src="assets/images/product-1.jpg" alt="Lattafa Bade e Al Oud Sublime"
+							class="product-card__image" loading="lazy" />
+						<div class="product-card__content">
+							<h3 class="product-card__title">
+								Lattafa Bade e Al Oud Sublime
+							</h3>
+							<p class="product-card__price">€23.99</p>
+							<button class="btn btn--analyze" aria-label="Analyze Lattafa Bade e Al Oud Sublime">
+								Analyze
+							</button>
+						</div>
+					</div>
+
+					<div class="product-card">
+						<img src="assets/images/product-2.jpg" alt="Lattafa Bade Khamrah Parfum"
+							class="product-card__image" loading="lazy" />
+						<div class="product-card__content">
+							<h3 class="product-card__title">Lattafa Bade Khamrah Parfum</h3>
+							<p class="product-card__price">€33.15</p>
+							<button class="btn btn--analyze" aria-label="Analyze Lattafa Bade Khamrah Parfum">
+								Analyze
+							</button>
+						</div>
+					</div>
+
+					<div class="product-card">
+						<img src="assets/images/product-3.jpg" alt="Lattafa Bade Khanjar Niche Emarati 55 ml"
+							class="product-card__image" loading="lazy" />
+						<div class="product-card__content">
+							<h3 class="product-card__title">
+								Lattafa Bade Khanjar Niche Emarati 55 ml
+							</h3>
+							<p class="product-card__price">€44.95</p>
+							<button class="btn btn--analyze"
+								aria-label="Analyze Lattafa Bade Khanjar Niche Emarati 55 ml">
+								Analyze
+							</button>
+						</div>
+					</div>
+				</div>
+			</article>
+
+			<!-- Suggested Markets -->
+			<aside class="suggested-markets" aria-label="Suggested markets to explore">
+				<header class="section-header">
+					<h3>Suggested Markets to Explore</h3>
+				</header>
+
+				<div class="markets-list">
+					<div class="market-card">
+						<div class="market-card__content">
+							<h4 class="market-card__title">Canada</h4>
+							<div class="market-card__detailBox">
+								<p class="market-card__description">
+									Opportunity: Strong seasonal demand for winter sportswear and
+									accessories.
+								</p>
+								<button class="btn btn--view-analysis" aria-expanded="false"
+									aria-controls="market-canada">
+									View Analysis
+								</button>
+							</div>
+						</div>
+					</div>
+
+					<div class="market-card">
+						<div class="market-card__content">
+							<h4 class="market-card__title">Australia</h4>
+							<div class="market-card__detailBox">
+								<p class="market-card__description">
+									Opportunity: Growing market for sustainable and eco-friendly
+									products.
+								</p>
+								<button class="btn btn--view-analysis" aria-expanded="false"
+									aria-controls="market-australia">
+									View Analysis
+								</button>
+							</div>
+						</div>
+					</div>
+
+					<div class="market-card">
+						<div class="market-card__content">
+							<h4 class="market-card__title">Saudi Arabia</h4>
+							<div class="market-card__detailBox">
+								<p class="market-card__description">
+									Opportunity: High demand for luxury home goods and smart
+									appliances.
+								</p>
+								<button class="btn btn--view-analysis" aria-expanded="false"
+									aria-controls="market-saudi">
+									View Analysis
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</aside>
+		</div>
+	</div>
+</body>
+
+</html>

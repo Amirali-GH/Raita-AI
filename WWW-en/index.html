@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fa" dir="ltr">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Raita AI - Dashboard</title>
+	<link rel="stylesheet" href="./css/common.css" />
+	<link rel="stylesheet" href="./css/agentchat.css" />
+	<link rel="stylesheet" href="./css/dashboard.css" />
+	<link rel="stylesheet" href="./css/marketing.css" />
+	<link rel="stylesheet" href="./css/dropshipping.css" />
+	<link rel="stylesheet" href="./css/marketinsight.css" />
+	<link rel="stylesheet" href="./css/settings.css" />
+	<link rel="stylesheet" href="./css/reports.css" />
+	<link rel="manifest" href="manifest.json" />
+</head>
+
+<body>
+	<!-- Sidebar Navigation -->
+	<aside class="sidebar" role="navigation" aria-label="Main navigation">
+		<div>
+			<header class="sidebar__brand">
+				<img src="assets/icons/favicon3.png" alt="Raita AI" class="sidebar__logo" />
+			</header>
+
+			<nav class="sidebar__nav">
+				<ul class="sidebar__menu">
+					<li class="sidebar__item sidebar__item--active">
+						<a href="#dashboard" class="sidebar__link" aria-current="page">
+							<div class="sidebar__item__icon">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="sidebar__icon"
+									xmlns="http://www.w3.org/2000/svg">
+									<path
+										d="M3.75 6C3.75 5.40326 3.98705 4.83097 4.40901 4.40901C4.83097 3.98705 5.40326 3.75 6 3.75H8.25C8.84674 3.75 9.41903 3.98705 9.84099 4.40901C10.2629 4.83097 10.5 5.40326 10.5 6V8.25C10.5 8.84674 10.2629 9.41903 9.84099 9.84099C9.41903 10.2629 8.84674 10.5 8.25 10.5H6C5.40326 10.5 4.83097 10.2629 4.40901 9.84099C3.98705 9.41903 3.75 8.84674 3.75 8.25V6ZM3.75 15.75C3.75 15.1533 3.98705 14.581 4.40901 14.159C4.83097 13.7371 5.40326 13.5 6 13.5H8.25C8.84674 13.5 9.41903 13.7371 9.84099 14.159C10.2629 14.581 10.5 15.1533 10.5 15.75V18C10.5 18.5967 10.2629 19.169 9.84099 19.591C9.41903 20.0129 8.84674 20.25 8.25 20.25H6C5.40326 20.25 4.83097 20.0129 4.40901 19.591C3.98705 19.169 3.75 18.5967 3.75 18V15.75ZM13.5 6C13.5 5.40326 13.7371 4.83097 14.159 4.40901C14.581 3.98705 15.1533 3.75 15.75 3.75H18C18.5967 3.75 19.169 3.98705 19.591 4.40901C20.0129 4.83097 20.25 5.40326 20.25 6V8.25C20.25 8.84674 20.0129 9.41903 19.591 9.84099C19.169 10.2629 18.5967 10.5 18 10.5H15.75C15.1533 10.5 14.581 10.2629 14.159 9.84099C13.7371 9.41903 13.5 8.84674 13.5 8.25V6ZM13.5 15.75C13.5 15.1533 13.7371 14.581 14.159 14.159C14.581 13.7371 15.1533 13.5 15.75 13.5H18C18.5967 13.5 19.169 13.7371 19.591 14.159C20.0129 14.581 20.25 15.1533 20.25 15.75V18C20.25 18.5967 20.0129 19.169 19.591 19.591C19.169 20.0129 18.5967 20.25 18 20.25H15.75C15.1533 20.25 14.581 20.0129 14.159 19.591C13.7371 19.169 13.5 18.5967 13.5 18V15.75Z"
+										stroke="#8237E8" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+								</svg>
+							</div>
+							Dashboard
+						</a>
+					</li>
+					<li class="sidebar__item">
+						<a href="#chat" class="sidebar__link">
+							<div class="sidebar__item__icon">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="sidebar__icon"
+									xmlns="http://www.w3.org/2000/svg">
+									<path d="M3 5H7" stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+									<path d="M5 3V7" stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+									<path d="M6 17V20" stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+									<path d="M7.5 18.5H4.5" stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+									<path
+										d="M21 12L17.21 10.476C16.8349 10.3252 16.4941 10.1002 16.2082 9.81441C15.9222 9.52864 15.697 9.18801 15.546 8.813L14.011 5L12.476 8.813C12.325 9.18801 12.0998 9.52864 11.8138 9.81441C11.5279 10.1002 11.1871 10.3252 10.812 10.476L7.022 12H7L10.79 13.524C11.1651 13.6748 11.5059 13.8998 11.7918 14.1856C12.0778 14.4714 12.303 14.812 12.454 15.187L13.989 19L15.524 15.187C15.675 14.812 15.9002 14.4714 16.1862 14.1856C16.4721 13.8998 16.8129 13.6748 17.188 13.524L20.978 12"
+										stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+								</svg>
+							</div>
+							Agent Chat
+						</a>
+					</li>
+					<li class="sidebar__item">
+						<a href="#marketinsight" class="sidebar__link">
+							<div class="sidebar__item__icon">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="sidebar__icon"
+									xmlns="http://www.w3.org/2000/svg">
+									<path
+										d="M18 21H6C5.20435 21 4.44129 20.6839 3.87868 20.1213C3.31607 19.5587 3 18.7956 3 18V6C3 5.20435 3.31607 4.44129 3.87868 3.87868C4.44129 3.31607 5.20435 3 6 3H18C18.7956 3 19.5587 3.31607 20.1213 3.87868C20.6839 4.44129 21 5.20435 21 6V18C21 18.7956 20.6839 19.5587 20.1213 20.1213C19.5587 20.6839 18.7956 21 18 21Z"
+										stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+									<path d="M13.6885 9.75H16.5005V12.562" stroke="#737373" stroke-width="1.5"
+										stroke-linecap="round" stroke-linejoin="round" />
+									<path d="M16.5 9.75L12.562 13.688L10.312 11.438L7.5 14.25" stroke="#737373"
+										stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+								</svg>
+							</div>
+							Market Insights
+						</a>
+					</li>
+					<li class="sidebar__item">
+						<a href="#dropshipping" class="sidebar__link">
+							<div class="sidebar__item__icon">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="sidebar__icon"
+									xmlns="http://www.w3.org/2000/svg">
+									<path
+										d="M12 22.5C11.2 22.5 10.4 22.32 9.75 21.96L4.5 19.02C3.03 18.21 2 16.33 2 14.7V9.3C2 7.67 3.03 5.79 4.5 4.98L9.75 2.04C11.1 1.29 12.9 1.29 14.25 2.04L19.5 4.98C20.97 5.79 22 7.67 22 9.3V14.7C22 16.33 20.97 18.21 19.5 19.02L14.25 21.96C13.6 22.32 12.8 22.5 12 22.5Z"
+										stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+									<path d="M3.5 7L12 12L20.5 7" stroke="#737373" stroke-width="1.5"
+										stroke-linecap="round" stroke-linejoin="round" />
+									<path d="M12 12V22" stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+									<path d="M17 10V14" stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+								</svg>
+
+							</div>
+							Dropshipping
+						</a>
+					</li>
+					<li class="sidebar__item">
+						<a href="#reports" class="sidebar__link">
+							<div class="sidebar__item__icon">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="sidebar__icon"
+									xmlns="http://www.w3.org/2000/svg">
+									<path
+										d="M10.5 6C9.01664 6 7.5666 6.43987 6.33323 7.26398C5.09986 8.08809 4.13856 9.25943 3.57091 10.6299C3.00325 12.0003 2.85472 13.5083 3.14411 14.9632C3.4335 16.418 4.14781 17.7544 5.1967 18.8033C6.2456 19.8522 7.58197 20.5665 9.03683 20.8559C10.4917 21.1453 11.9997 20.9968 13.3701 20.4291C14.7406 19.8614 15.9119 18.9001 16.736 17.6668C17.5601 16.4334 18 14.9834 18 13.5H10.5V6Z"
+										stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+									<path
+										d="M13.5 10.5H21C21 8.51088 20.2098 6.60322 18.8033 5.1967C17.3968 3.79018 15.4891 3 13.5 3V10.5Z"
+										stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+								</svg>
+							</div>
+							Reports
+						</a>
+					</li>
+					<li class="sidebar__item">
+						<a href="#marketing" class="sidebar__link">
+							<div class="sidebar__item__icon">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="sidebar__icon"
+									xmlns="http://www.w3.org/2000/svg">
+									<path
+										d="M22 15.236V18C22 18.2652 21.8946 18.5196 21.7071 18.7071C21.5196 18.8946 21.2652 19 21 19H3C2.73478 19 2.48043 18.8946 2.29289 18.7071C2.10536 18.5196 2 18.2652 2 18V15.236C2.00004 15.165 2.01979 15.0955 2.05704 15.0351C2.0943 14.9747 2.1476 14.9259 2.211 14.894V14.894C2.74864 14.6255 3.20083 14.2125 3.51683 13.7013C3.83283 13.1901 4.00014 12.601 4 12V12C3.99991 11.3991 3.83251 10.8101 3.51653 10.2989C3.20056 9.78777 2.7485 9.37471 2.211 9.106V9.106C2.1476 9.07413 2.0943 9.02528 2.05704 8.9649C2.01979 8.90451 2.00004 8.83496 2 8.764V6C2 5.73478 2.10536 5.48043 2.29289 5.29289C2.48043 5.10536 2.73478 5 3 5H21C21.2652 5 21.5196 5.10536 21.7071 5.29289C21.8946 5.48043 22 5.73478 22 6V8.764C22 8.83496 21.9802 8.90451 21.943 8.9649C21.9057 9.02528 21.8524 9.07413 21.789 9.106L21.745 9.129C21.2191 9.40179 20.7782 9.81382 20.4704 10.3201C20.1627 10.8264 20 11.4075 20 12V12C20 12.6008 20.1673 13.1898 20.483 13.7009C20.7988 14.212 21.2507 14.6252 21.788 14.894V14.894C21.8514 14.9259 21.9047 14.9747 21.942 15.0351C21.9792 15.0955 21.999 15.165 21.999 15.236H22Z"
+										stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+									<path d="M9.42969 14.57L14.4297 9.57001" stroke="#737373" stroke-width="1.5"
+										stroke-linecap="round" stroke-linejoin="round" />
+									<path
+										d="M14.5 14.25C14.4506 14.2502 14.4023 14.265 14.3614 14.2926C14.3204 14.3202 14.2885 14.3593 14.2697 14.405C14.251 14.4507 14.2461 14.501 14.2559 14.5494C14.2657 14.5978 14.2896 14.6423 14.3246 14.6771C14.3596 14.712 14.4041 14.7357 14.4526 14.7453C14.501 14.7548 14.5513 14.7498 14.5969 14.7309C14.6425 14.7119 14.6815 14.6799 14.7089 14.6388C14.7363 14.5977 14.751 14.5494 14.751 14.5C14.7511 14.4671 14.7447 14.4344 14.7321 14.4039C14.7195 14.3735 14.701 14.3458 14.6777 14.3226C14.6543 14.2993 14.6266 14.2809 14.5961 14.2685C14.5656 14.256 14.5329 14.2497 14.5 14.25"
+										stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+									<path
+										d="M9.49998 9.25001C9.45057 9.25021 9.40234 9.26504 9.36136 9.29263C9.32038 9.32022 9.28849 9.35933 9.26972 9.40503C9.25095 9.45073 9.24614 9.50096 9.2559 9.54939C9.26566 9.59782 9.28955 9.64227 9.32455 9.67713C9.35956 9.712 9.4041 9.73571 9.45257 9.74527C9.50104 9.75484 9.55125 9.74983 9.59688 9.73088C9.6425 9.71193 9.68149 9.67989 9.70891 9.6388C9.73634 9.59771 9.75098 9.54941 9.75098 9.50001C9.75111 9.46706 9.7447 9.43441 9.73212 9.40395C9.71954 9.37349 9.70104 9.34583 9.6777 9.32258C9.65435 9.29933 9.62662 9.28094 9.59611 9.26848C9.5656 9.25602 9.53293 9.24974 9.49998 9.25001Z"
+										stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+								</svg>
+							</div>
+							Marketing
+						</a>
+					</li>
+					<li class="sidebar__item">
+						<a href="#settings" class="sidebar__link">
+							<div class="sidebar__item__icon">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="sidebar__icon"
+									xmlns="http://www.w3.org/2000/svg">
+									<path
+										d="M9.59372 3.94C9.68372 3.398 10.1537 3 10.7037 3H13.2967C13.8467 3 14.3167 3.398 14.4067 3.94L14.6197 5.221C14.6827 5.595 14.9327 5.907 15.2647 6.091C15.3387 6.131 15.4117 6.174 15.4847 6.218C15.8097 6.414 16.2047 6.475 16.5597 6.342L17.7767 5.886C18.0261 5.79221 18.3007 5.78998 18.5516 5.87971C18.8025 5.96945 19.0134 6.14531 19.1467 6.376L20.4427 8.623C20.5758 8.8537 20.6227 9.12413 20.5751 9.38617C20.5275 9.6482 20.3884 9.88485 20.1827 10.054L19.1797 10.881C18.8867 11.122 18.7417 11.494 18.7497 11.873C18.7511 11.958 18.7511 12.043 18.7497 12.128C18.7417 12.506 18.8867 12.878 19.1797 13.119L20.1837 13.946C20.6077 14.296 20.7177 14.901 20.4437 15.376L19.1457 17.623C19.0126 17.8536 18.8019 18.0296 18.5512 18.1195C18.3005 18.2094 18.0261 18.2074 17.7767 18.114L16.5597 17.658C16.2047 17.525 15.8097 17.586 15.4837 17.782C15.4112 17.8261 15.3379 17.8688 15.2637 17.91C14.9327 18.093 14.6827 18.405 14.6197 18.779L14.4067 20.06C14.3167 20.603 13.8467 21 13.2967 21H10.7027C10.1527 21 9.68372 20.602 9.59272 20.06L9.37972 18.779C9.31772 18.405 9.06772 18.093 8.73572 17.909C8.66157 17.8681 8.58822 17.8258 8.51572 17.782C8.19072 17.586 7.79572 17.525 7.43972 17.658L6.22272 18.114C5.97345 18.2075 5.69908 18.2096 5.44842 18.1199C5.19775 18.0302 4.98703 17.8545 4.85372 17.624L3.55672 15.377C3.42366 15.1463 3.37676 14.8759 3.42437 14.6138C3.47198 14.3518 3.61101 14.1152 3.81672 13.946L4.82072 13.119C5.11272 12.879 5.25772 12.506 5.25072 12.128C5.24915 12.043 5.24915 11.958 5.25072 11.873C5.25772 11.493 5.11272 11.122 4.82072 10.881L3.81672 10.054C3.61126 9.88489 3.47239 9.64843 3.42479 9.38662C3.37719 9.12481 3.42393 8.8546 3.55672 8.624L4.85372 6.377C4.9869 6.14614 5.19773 5.97006 5.44863 5.88014C5.69953 5.79021 5.97421 5.79229 6.22372 5.886L7.43972 6.342C7.79572 6.475 8.19072 6.414 8.51572 6.218C8.58772 6.174 8.66172 6.132 8.73572 6.09C9.06772 5.907 9.31772 5.595 9.37972 5.221L9.59372 3.94Z"
+										stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+									<path
+										d="M14.9997 12C14.9997 12.7956 14.6836 13.5587 14.121 14.1213C13.5584 14.6839 12.7954 15 11.9997 15C11.2041 15 10.441 14.6839 9.8784 14.1213C9.31579 13.5587 8.99972 12.7956 8.99972 12C8.99972 11.2044 9.31579 10.4413 9.8784 9.87868C10.441 9.31607 11.2041 9 11.9997 9C12.7954 9 13.5584 9.31607 14.121 9.87868C14.6836 10.4413 14.9997 11.2044 14.9997 12Z"
+										stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round" />
+								</svg>
+							</div>
+							Setting
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+
+		<footer class="sidebar__profile">
+			<div class="profile__wrapper">
+				<div class="profile__info">
+					<div class="profile__info_Section">
+						<img src="assets/images/profile.jpg" alt="AmirAli Ghadiri" class="profile__avatar" />
+						<div class="profile__details">
+							<p class="profile__name">AmirAli Ghadiri</p>
+							<p class="profile__email">info@RaitaAI.com</p>
+						</div>
+					</div>
+				</div>
+				<button class="btn--logout-icon" aria-label="Logout" id="btn-logout">
+					<svg class="icon-logout-sidebar" width="24" height="24" viewBox="0 0 24 24" fill="none"
+						xmlns="http://www.w3.org/2000/svg">
+						<path
+							d="M14.5 9.5V5.75C14.5 5.15326 14.2629 4.58097 13.841 4.15901C13.419 3.73705 12.8467 3.5 12.25 3.5H6.25C5.65326 3.5 5.08097 3.73705 4.65901 4.15901C4.23705 4.58097 4 5.15326 4 5.75V19.25C4 19.8467 4.23705 20.419 4.65901 20.841C5.08097 21.2629 5.65326 21.5 6.25 21.5H12.25C12.8467 21.5 13.419 21.2629 13.841 20.841C14.2629 20.419 14.5 19.8467 14.5 19.25V15.5M17.5 15.5L20.5 12.5M20.5 12.5L17.5 9.5M20.5 12.5H7.75"
+							stroke="#ED544E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+					Logout
+				</button>
+			</div>
+		</footer>
+	</aside>
+
+	<div class="sidebar-overlay"></div>
+
+	<!-- Main Content -->
+	<div class="main">
+		<!-- Topbar -->
+		<header class="topbar">
+			<div class="topbar__left">
+				<button class="topbar__menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+					<span></span>
+					<span></span>
+					<span></span>
+				</button>
+				<div class="topbar__title">
+					<h2 class="title-h2">Dashboard</h2>
+					<p class="muted">Find & Connect Suppliers</p>
+				</div>
+			</div>
+
+			<div class="topbar__right">
+				<button class="btn btn--export hidden" id="Button-Export-As-Excel">
+					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M17 13V17H3V13M10 3V13M10 3L6 7M10 3L14 7" stroke="#525866" stroke-width="1.5"
+							stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+					Export as Excel
+				</button>
+				<button class="btn btn--export hidden" id="Button-Export-As-PDF">
+					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M17 13V17H3V13M10 3V13M10 3L6 7M10 3L14 7" stroke="#525866" stroke-width="1.5"
+							stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+					Export as PDF
+				</button>
+				<button class="btn btn--icon" aria-label="Help" id="Button-Help">
+					<span>?</span>
+				</button>
+				<button class="btn-header-action hidden" aria-label="More options" id="Button-More-Options">
+					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<circle cx="10" cy="4" r="1.5" fill="#737373" />
+						<circle cx="10" cy="10" r="1.5" fill="#737373" />
+						<circle cx="10" cy="16" r="1.5" fill="#737373" />
+					</svg>
+				</button>
+				<button class="btn-header-action hidden" aria-label="Download chat" id="Button-Download">
+					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M17 13V17H3V13M10 3V13M10 13L6 9M10 13L14 9" stroke="#737373" stroke-width="1.5"
+							stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+				</button>
+				<button class="btn-header-action btn--share hidden" aria-label="Share" id="Button-Share">
+					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path
+							d="M4 12V16C4 16.5304 4.21071 17.0391 4.58579 17.4142C4.96086 17.7893 5.46957 18 6 18H14C14.5304 18 15.0391 17.7893 15.4142 17.4142C15.7893 17.0391 16 16.5304 16 16V12M13 5L10 2M10 2L7 5M10 2V12"
+							stroke="#FFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+					Share
+				</button>
+			</div>
+		</header>
+
+		<!-- Main Content Area -->
+		<main class="content" id="app-content">
+			<!-- محتوا به صورت داینامیک بارگذاری می‌شود -->
+		</main>
+	</div>
+
+	<!-- Scripts -->
+	<script src="./js/app.js"></script>
+</body>
+
+</html>

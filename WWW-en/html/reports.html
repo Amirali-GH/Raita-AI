@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Reports & Analytics</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="../css/style.css" />
+	<!-- Chart.js CDN -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+	<div class="page-content">
+		<!-- Search and Filter Section -->
+		<div class="reports-search-section">
+			<div class="reports-search-wrapper">
+				<input type="text" class="reports-search-input"
+					placeholder="090112 - Coffee: decaffeinated, not roasted" />
+				<button class="btn-search-inline" aria-label="Search">
+					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path
+							d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z"
+							stroke="#737373" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+						<path d="M19 19L14.65 14.65" stroke="#737373" stroke-width="1.5" stroke-linecap="round"
+							stroke-linejoin="round" />
+					</svg>
+				</button>
+			</div>
+
+			<div class="reports-filters">
+				<div class="reports-filter">
+					<label class="filter-label">Origin Country:</label>
+					<select class="filter-select">
+						<option value="italy">🇮🇹 Italy</option>
+						<option value="brazil">🇧🇷 Brazil</option>
+						<option value="china">🇨🇳 China</option>
+						<option value="uae">🇦🇪 UAE</option>
+					</select>
+				</div>
+
+				<button class="btn-swap" aria-label="Swap countries">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M7 16L17 16M17 16L13 12M17 16L13 20" stroke="#737373" stroke-width="1.5"
+							stroke-linecap="round" stroke-linejoin="round" />
+						<path d="M17 8L7 8M7 8L11 4M7 8L11 12" stroke="#737373" stroke-width="1.5"
+							stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+				</button>
+
+				<div class="reports-filter">
+					<label class="filter-label">Destination Country:</label>
+					<select class="filter-select">
+						<option value="qatar">🇶🇦 Qatar</option>
+						<option value="germany">🇩🇪 Germany</option>
+						<option value="usa">🇺🇸 USA</option>
+						<option value="france">🇫🇷 France</option>
+					</select>
+				</div>
+			</div>
+		</div>
+
+		<!-- Trade Analysis Title -->
+		<div class="reports-analysis-title">
+			<h3>Trade Analysis: Coffee Exports from Brazil to Germany</h3>
+		</div>
+
+		<!-- Stats Cards Grid -->
+		<div class="reports-stats-grid">
+			<div class="reports-stat-card">
+				<p class="stat-card__label">Total Trade Value (Last 5 Years)</p>
+				<h2 class="stat-card__value">$2.5 Billion</h2>
+			</div>
+
+			<div class="reports-stat-card">
+				<p class="stat-card__label">Brazil's Market Share in Germany</p>
+				<h2 class="stat-card__value">28%</h2>
+			</div>
+
+			<div class="reports-stat-card">
+				<p class="stat-card__label">Avg. Price / Ton</p>
+				<h2 class="stat-card__value">$5,000</h2>
+			</div>
+
+			<div class="reports-stat-card">
+				<p class="stat-card__label">Quantity Shipped (Last 5 Years)</p>
+				<h2 class="stat-card__value">500,000 tons</h2>
+			</div>
+		</div>
+
+		<!-- Charts Section -->
+		<div class="reports-charts-grid">
+			<!-- Left Chart -->
+			<div class="reports-chart-card">
+				<div class="chart-header">
+					<h3 class="chart-title">Trade Value Over Time</h3>
+					<div class="chart-trend">
+						<span class="trend-value trend--up">+1.3%</span>
+						<span class="trend-label">VS LAST WEEK</span>
+					</div>
+				</div>
+				<div class="chart-container">
+					<canvas id="tradeValueChart"></canvas>
+				</div>
+			</div>
+
+			<!-- Right Chart -->
+			<div class="reports-chart-card">
+				<div class="chart-header">
+					<h3 class="chart-title">Price Comparison Over Time</h3>
+					<div class="chart-legend">
+						<div class="legend-item">
+							<span class="legend-dot" style="background: #8237E8;"></span>
+							<span class="legend-label">Brazil's Avg. Price</span>
+						</div>
+						<div class="legend-item">
+							<span class="legend-dot" style="background: #FF69B4;"></span>
+							<span class="legend-label">Germany's Market Avg. Price</span>
+						</div>
+					</div>
+				</div>
+				<div class="chart-container">
+					<canvas id="priceComparisonChart"></canvas>
+				</div>
+			</div>
+		</div>
+
+		<!-- Tables Section -->
+		<div class="reports-tables-grid">
+			<!-- Left Table -->
+			<div class="reports-table-card">
+				<h3 class="table-title">Top Coffee Exporters to Germany</h3>
+				<div class="table-wrapper">
+					<table class="reports-table">
+						<thead>
+							<tr>
+								<th>Rank</th>
+								<th>Country</th>
+								<th>Value (USD)</th>
+								<th>Market Share (%)</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>
+									<div class="country-cell">
+										<span class="flag">🇧🇷</span>
+										<span>Brazil</span>
+									</div>
+								</td>
+								<td>$500M</td>
+								<td>28%</td>
+							</tr>
+							<tr>
+								<td>2</td>
+								<td>
+									<div class="country-cell">
+										<span class="flag">🇻🇳</span>
+										<span>Vietnam</span>
+									</div>
+								</td>
+								<td>$350M</td>
+								<td>19%</td>
+							</tr>
+							<tr>
+								<td>3</td>
+								<td>
+									<div class="country-cell">
+										<span class="flag">🇨🇴</span>
+										<span>Colombia</span>
+									</div>
+								</td>
+								<td>$280M</td>
+								<td>15%</td>
+							</tr>
+							<tr>
+								<td>4</td>
+								<td>
+									<div class="country-cell">
+										<span class="flag">🇭🇳</span>
+										<span>Honduras</span>
+									</div>
+								</td>
+								<td>$150M</td>
+								<td>8%</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- Right Table -->
+			<div class="reports-table-card">
+				<h3 class="table-title">Brazil's Top Coffee Export Markets</h3>
+				<div class="table-wrapper">
+					<table class="reports-table">
+						<thead>
+							<tr>
+								<th>Rank</th>
+								<th>Country</th>
+								<th>Value (USD)</th>
+								<th>Brazil's Exports</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>
+									<div class="country-cell">
+										<span class="flag">🇺🇸</span>
+										<span>United States</span>
+									</div>
+								</td>
+								<td>$1.2B</td>
+								<td>28%</td>
+							</tr>
+							<tr>
+								<td>2</td>
+								<td>
+									<div class="country-cell">
+										<span class="flag">🇩🇪</span>
+										<span>Germany</span>
+									</div>
+								</td>
+								<td>$500M</td>
+								<td>19%</td>
+							</tr>
+							<tr>
+								<td>3</td>
+								<td>
+									<div class="country-cell">
+										<span class="flag">🇮🇹</span>
+										<span>Italy</span>
+									</div>
+								</td>
+								<td>$450M</td>
+								<td>15%</td>
+							</tr>
+							<tr>
+								<td>4</td>
+								<td>
+									<div class="country-cell">
+										<span class="flag">🇯🇵</span>
+										<span>Japan</span>
+									</div>
+								</td>
+								<td>$400M</td>
+								<td>8%</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="../js/reports.js"></script>
+</body>
+
+</html>
